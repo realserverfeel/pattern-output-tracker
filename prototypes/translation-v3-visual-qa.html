@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Translation v3 visual QA</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    :root {
+      --font-interface: Inter, "Segoe UI", sans-serif;
+      --font-text: Georgia, "Noto Serif", serif;
+      --font-monospace: "SFMono-Regular", Consolas, monospace;
+      --background-primary: #fbfafc;
+      --background-secondary: #f3f1f5;
+      --background-modifier-hover: #eeebf2;
+      --text-normal: #242127;
+      --text-muted: #746f7c;
+      --text-faint: #a39da9;
+      --size-4-1: 4px;
+      --size-4-2: 8px;
+    }
+    html,body { height:100%; margin:0; }
+    button,input,textarea { font:inherit; }
+    button { border:1px solid #ddd8e1; background:#fff; }
+    button.mod-cta { color:#fff; background:#7057e8; }
+    svg { width:15px; }
+    .qa-switch { position:fixed; right:18px; bottom:18px; z-index:100; display:flex; gap:5px; padding:5px; border:1px solid #ddd8e1; border-radius:12px; background:#fff; box-shadow:0 12px 32px #241b3b22; }
+    .qa-switch button { padding:7px 10px; border-radius:8px; }
+    .screen { display:none; height:100%; }
+    .screen.is-active { display:block; }
+  </style>
+</head>
+<body>
+  <div class="qa-switch">
+    <button data-screen="library">文本库</button>
+    <button data-screen="work">初译</button>
+    <button data-screen="compare">对照</button>
+  </div>
+  <section id="library" class="screen is-active">
+    <div class="translation-app">
+      <div class="translation-topbar">
+        <div class="translation-brand"><div class="translation-brand-mark">文</div><span>Translation</span></div>
+        <div class="translation-primary-nav"><button class="is-active">文本练习</button><button>句子记录</button></div>
+        <div class="translation-topbar-actions"><button class="mod-cta translation-create-button">＋ 新建</button></div>
+      </div>
+      <div class="translation-library-page">
+        <div class="translation-library-hero">
+          <div><div class="translation-eyebrow">WORKSPACE</div><h1>翻译练习</h1><div class="translation-library-subtitle">从原文整理到回译对照，每篇文章保留一条完整记录。</div></div>
+          <button class="translation-due-callout"><span class="translation-due-dot"></span><span>2 篇可以开始回译</span></button>
+        </div>
+        <div class="translation-library-controls">
+          <div class="translation-filter-tabs"><button class="is-active">全部</button><button>待整理</button><button>初译中</button><button>等待回译</button><button>回译中</button><button>对照中</button><button>已完成</button></div>
+          <div class="translation-search">⌕ <input placeholder="搜索文本"></div>
+        </div>
+        <div class="translation-article-list">
+          <div class="translation-list-header"><span>文本</span><span>阶段</span><span>进度</span><span></span></div>
+          <div class="translation-article-row is-translate">
+            <div class="translation-article-identity"><div class="translation-article-title">Thyroid Diary — Lydia Davis</div><div class="translation-article-meta"><span>英语</span><span>11 个单位</span><span>Reading/Lydia Davis.md</span></div></div>
+            <div class="translation-stage-cell"><span class="translation-status-dot is-translate"></span><span>初译中</span></div>
+            <div class="translation-progress-cell"><div class="translation-progress-track"><div class="translation-progress-fill" style="width:64%"></div></div><span>7 / 11</span></div>
+            <div class="translation-row-actions"><button class="translation-row-open">继续</button><button class="translation-icon-button">⋯</button></div>
+          </div>
+          <div class="translation-article-row is-waitingBackTranslation">
+            <div class="translation-article-identity"><div class="translation-article-title">夏日十四行诗</div><div class="translation-article-meta"><span>英语</span><span>14 个单位</span></div></div>
+            <div class="translation-stage-cell"><span class="translation-status-dot is-waitingBackTranslation"></span><span>今天回译</span></div>
+            <div class="translation-progress-cell"><div class="translation-progress-track"><div class="translation-progress-fill" style="width:100%"></div></div><span>14 / 14</span></div>
+            <div class="translation-row-actions"><button class="translation-row-open">查看</button><button class="translation-icon-button">⋯</button></div>
+          </div>
+          <div class="translation-article-row is-complete">
+            <div class="translation-article-identity"><div class="translation-article-title">こころ・冒頭</div><div class="translation-article-meta"><span>日语</span><span>8 个单位</span></div></div>
+            <div class="translation-stage-cell"><span class="translation-status-dot is-complete"></span><span>已完成</span></div>
+            <div class="translation-progress-cell"><div class="translation-progress-track"><div class="translation-progress-fill" style="width:100%"></div></div><span>8 / 8</span></div>
+            <div class="translation-row-actions"><button class="translation-row-open">查看</button><button class="translation-icon-button">⋯</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="work" class="screen">
+    <div class="translation-app">
+      <div class="translation-task-shell is-translate">
+        <div class="translation-task-header">
+          <button class="translation-icon-button">←</button>
+          <div class="translation-task-title"><div class="translation-task-stage">初译中</div><h2>Thyroid Diary — Lydia Davis</h2></div>
+          <div class="translation-stage-rail">
+            <div class="translation-stage-step is-past"><span class="translation-stage-node"></span><span>整理</span></div>
+            <div class="translation-stage-step is-current"><span class="translation-stage-node"></span><span>初译</span></div>
+            <div class="translation-stage-step"><span class="translation-stage-node"></span><span>等待</span></div>
+            <div class="translation-stage-step"><span class="translation-stage-node"></span><span>回译</span></div>
+            <div class="translation-stage-step"><span class="translation-stage-node"></span><span>对照</span></div>
+            <div class="translation-stage-step"><span class="translation-stage-node"></span><span>完成</span></div>
+          </div>
+          <div class="translation-task-header-actions"><button class="translation-icon-button">⋯</button></div>
+        </div>
+        <div class="translation-work-layout is-translate">
+          <div class="translation-unit-nav">
+            <div class="translation-unit-nav-heading"><span>单位</span><span>2/11</span></div>
+            <div class="translation-unit-nav-list">
+              <button class="translation-unit-nav-item is-confirmed"><span class="translation-unit-number">S1</span><span class="translation-unit-preview">I have always been puzzled, anyway, by the economics of the thing,</span><span class="translation-unit-check">✓</span></button>
+              <button class="translation-unit-nav-item is-active"><span class="translation-unit-number">S2</span><span class="translation-unit-preview">because I would pay the dentist,</span><span></span></button>
+              <button class="translation-unit-nav-item"><span class="translation-unit-number">S3</span><span class="translation-unit-preview">and he would presumably give his wife the money</span><span></span></button>
+            </div>
+          </div>
+          <div class="translation-unit-workspace">
+            <div class="translation-unit-header"><div class="translation-unit-position">02 / 11</div><h3>初译</h3><div class="translation-mode-switch"><button class="is-active">编辑</button><button>关联</button></div></div>
+            <div class="translation-pair-stack">
+              <div class="translation-text-card"><div class="translation-card-label">原文</div><div class="translation-selectable-text">because I would pay the dentist,</div></div>
+              <div class="translation-editor-card"><div class="translation-card-label">译文</div><textarea class="translation-unit-editor">因为我会付钱给牙医，</textarea></div>
+            </div>
+            <div class="translation-notes"><div class="translation-notes-title">批注与提示</div><div class="translation-note-row"><span>注意 would 表示过去习惯，而不是单次将来。</span><button class="translation-icon-button">×</button></div><div class="translation-note-composer"><input placeholder="添加一条批注"><button class="translation-icon-button">＋</button></div></div>
+          </div>
+        </div>
+        <div class="translation-work-footer"><button>上一项</button><button class="mod-cta translation-confirm-button">确定</button><button>下一项</button></div>
+      </div>
+    </div>
+  </section>
+  <section id="compare" class="screen">
+    <div class="translation-app">
+      <div class="translation-task-shell is-compare">
+        <div class="translation-task-header"><button class="translation-icon-button">←</button><div class="translation-task-title"><div class="translation-task-stage">对照中</div><h2>Thyroid Diary — Lydia Davis</h2></div><div class="translation-stage-rail"></div><div></div></div>
+        <div class="translation-work-layout">
+          <div class="translation-unit-nav"><div class="translation-unit-nav-heading"><span>单位</span><span>8/11</span></div><div class="translation-unit-nav-list"><button class="translation-unit-nav-item is-active"><span class="translation-unit-number">S10</span><span class="translation-unit-preview">I thought that if no one paid anyone...</span><span></span></button></div></div>
+          <div class="translation-unit-workspace">
+            <div class="translation-unit-header"><div class="translation-unit-position">10 / 11</div><h3>原文对照</h3><div class="translation-mode-switch"><button>编辑</button><button class="is-active">关联</button></div></div>
+            <div class="translation-compare-grid">
+              <div class="translation-compare-main">
+                <div class="translation-text-card"><div class="translation-card-label">原文</div><div class="translation-selectable-text"><span class="is-related" style="--relation-index:0">I thought that</span> if no one paid anyone, <span class="is-draft-range">it would work out</span> just the same,</div></div>
+                <div class="translation-text-card"><div class="translation-card-label">回译</div><div class="translation-selectable-text">I thought, if nobody paid anyone, <span class="is-draft-range">things would work</span> just the same,</div></div>
+                <div class="translation-relation-composer"><div class="translation-relation-instruction"><span>分别拖选两侧片段；继续选择可组成不连续关联。</span><strong>原文 1 段 · 回译 1 段</strong></div><div class="translation-relation-actions"><button>取消</button><button class="mod-cta">建立关联</button></div></div>
+              </div>
+              <div class="translation-forward-reference"><div class="translation-reference-kicker">初译参照</div><div class="translation-reference-text">我想如果没有人付钱给任何人，事情会恰好一样。</div><div class="translation-reference-relations"><div class="translation-reference-relation"><span class="translation-reference-relation-index">1</span><span>no one … it ↔ 没有人 … 事情</span></div></div><div class="translation-readonly-notes"><div><span>◫</span><span>注意 work out，而不是单独 work。</span></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="translation-work-footer"><button>上一项</button><button class="mod-cta translation-confirm-button">确定</button><button>下一项</button></div>
+      </div>
+    </div>
+  </section>
+  <script>
+    document.querySelectorAll("[data-screen]").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.toggle("is-active", screen.id === button.dataset.screen));
+    }));
+  </script>
+</body>
+</html>

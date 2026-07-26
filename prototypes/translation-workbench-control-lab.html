@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Translation workbench control lab</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    :root {
+      --background-primary: #ffffff;
+      --background-secondary: #f5f5f7;
+      --background-modifier-hover: #efeff2;
+      --background-modifier-border: #dedee4;
+      --text-normal: #24232a;
+      --text-muted: #74727d;
+      --text-faint: #aaa8b0;
+      --text-on-accent: #fff;
+      --interactive-accent: #7057e8;
+      --font-interface: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+      --font-text: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+      --font-monospace: "SFMono-Regular", Consolas, monospace;
+      --size-4-1: 4px;
+      --size-4-2: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fff; }
+    button, input, textarea { font: inherit; }
+    .lab-icon { display: inline-grid; place-items: center; font-size: 12px; line-height: 1; }
+    .translation-task-shell { min-height: 760px; }
+  </style>
+</head>
+<body>
+  <main class="translation-app">
+    <section class="translation-task-shell is-translate">
+      <header class="translation-task-header">
+        <button class="translation-icon-button" aria-label="返回"><span class="lab-icon">←</span></button>
+        <div class="translation-task-title">
+          <div class="translation-task-stage">初译中</div>
+          <h2>Shall I compare thee to a summer’s day?</h2>
+        </div>
+        <div class="translation-stage-rail">
+          <div class="translation-stage-step is-past"><span class="translation-stage-node"></span><span>整理</span></div>
+          <div class="translation-stage-step is-current"><span class="translation-stage-node"></span><span>初译</span></div>
+          <div class="translation-stage-step"><span class="translation-stage-node"></span><span>等待</span></div>
+          <div class="translation-stage-step"><span class="translation-stage-node"></span><span>回译</span></div>
+          <div class="translation-stage-step"><span class="translation-stage-node"></span><span>对照</span></div>
+          <div class="translation-stage-step"><span class="translation-stage-node"></span><span>完成</span></div>
+        </div>
+        <div class="translation-task-header-actions">
+          <button class="translation-icon-button" aria-label="打开来源"><span class="lab-icon">▧</span></button>
+          <button class="translation-icon-button" aria-label="更多"><span class="lab-icon">•••</span></button>
+        </div>
+      </header>
+
+      <div class="translation-work-layout is-translate">
+        <aside class="translation-unit-nav">
+          <div class="translation-unit-nav-heading"><span>单位</span></div>
+          <div class="translation-unit-nav-list">
+            <button class="translation-unit-nav-item has-content">
+              <span class="translation-unit-number">S1</span><span class="translation-unit-preview">Shall I compare thee</span><span class="translation-unit-check">○</span>
+            </button>
+            <button class="translation-unit-nav-item is-active has-content">
+              <span class="translation-unit-number">S2</span><span class="translation-unit-preview">to a summer’s day?</span><span class="translation-unit-check">●</span>
+            </button>
+            <button class="translation-unit-nav-item">
+              <span class="translation-unit-number">S3</span><span class="translation-unit-preview">Thou art more lovely and more temperate.</span><span class="translation-unit-check"></span>
+            </button>
+            <button class="translation-unit-nav-item">
+              <span class="translation-unit-number">S4</span><span class="translation-unit-preview">Rough winds do shake the darling buds of May.</span><span class="translation-unit-check"></span>
+            </button>
+          </div>
+        </aside>
+
+        <section class="translation-unit-workspace">
+          <div class="translation-unit-header"><h3>初译</h3><div class="translation-unified-hint">自动保存</div></div>
+          <div class="translation-unified-layout">
+            <div class="translation-pair-stack translation-unified-pair">
+              <div class="translation-text-card translation-unified-card">
+                <div class="translation-card-label">原文</div>
+                <div class="translation-selectable-text is-selecting">Thou art more <span class="is-related" style="--relation-index:0">lovely and more</span> temperate.</div>
+              </div>
+              <div class="translation-editor-card translation-unified-card">
+                <div class="translation-card-label">译文</div>
+                <div class="translation-unit-editor translation-unified-editor">你比夏日更加<span class="is-related" style="--relation-index:0">可爱，也更加温和</span>。</div>
+              </div>
+              <footer class="translation-work-footer">
+                <div class="translation-work-footer-navigation">
+                  <button class="translation-control-button is-navigation"><span>←</span><span>上一项</span></button>
+                  <button class="translation-control-button is-navigation"><span>下一项</span><span>→</span></button>
+                </div>
+                <div class="translation-work-footer-progress">2 / 4</div>
+                <button class="translation-control-button is-primary translation-stage-complete"><span>完成初译</span><span>→</span></button>
+              </footer>
+            </div>
+
+            <aside class="translation-context-sidebar">
+              <section class="translation-relation-inspector is-visible">
+                <header class="translation-relation-inspector-header">
+                  <div><div class="translation-reference-kicker">关联</div><div class="translation-relation-inspector-summary">lovely and more ↔ 可爱，也更加温和</div></div>
+                  <button class="translation-icon-button" aria-label="关闭">×</button>
+                </header>
+                <div class="translation-relation-tag-section">
+                  <div class="translation-field-label">Tags</div>
+                  <div class="translation-relation-tag-body">
+                    <div class="translation-relation-tags">
+                      <button class="translation-relation-tag">比较结构 ×</button>
+                      <button class="translation-relation-tag">语序 ×</button>
+                    </div>
+                    <button class="translation-tag-add-button"><span>＋</span><span>添加标签</span></button>
+                  </div>
+                </div>
+                <label class="translation-relation-comment"><span class="translation-field-label">评论</span><textarea>注意比较级与中文语序。</textarea></label>
+                <div class="translation-relation-inspector-footer"><button class="translation-danger-action"><span>⌁</span><span>解除关联</span></button></div>
+              </section>
+              <section class="translation-notes is-empty"><button class="translation-notes-empty-action"><span>＋</span><span>添加句子批注</span></button></section>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

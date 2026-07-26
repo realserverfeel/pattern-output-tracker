@@ -1,0 +1,21 @@
+node_modules/
+output/
+release/
+main.js
+*.js.map
+*.zip
+
+# Local Obsidian vaults and runtime data
+.obsidian/
+_PatternOutputTracker/
+测试Vault内容/
+
+# Unrelated projects and local prototypes generated outside this repository
+world-history-trilingual/
+
+# Local environment and operating-system files
+.env
+.env.*
+.DS_Store
+Thumbs.db
+

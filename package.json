@@ -1,0 +1,25 @@
+{
+  "name": "pattern-output-tracker",
+  "version": "0.8.0-alpha.17",
+  "description": "Coordinate-based Pattern Maker for English and Japanese writing output.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "test": "esbuild tests/text-segmentation.test.ts --bundle --platform=node --format=cjs --outfile=output/text-segmentation.test.cjs && node output/text-segmentation.test.cjs && esbuild tests/pattern-definition.test.ts --bundle --platform=node --format=cjs --outfile=output/pattern-definition.test.cjs && node output/pattern-definition.test.cjs && esbuild tests/translation-model.test.ts --bundle --platform=node --format=cjs --outfile=output/translation-model.test.cjs && node output/translation-model.test.cjs"
+  },
+  "keywords": [
+    "obsidian",
+    "language-learning",
+    "writing",
+    "patterns"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "esbuild": "0.25.5",
+    "obsidian": "latest",
+    "typescript": "^5.8.3"
+  }
+}
