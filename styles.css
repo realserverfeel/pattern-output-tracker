@@ -22,11 +22,22 @@
   --tx-raised: var(--background-primary);
   --tx-radius: 18px;
   --tx-shadow: 0 14px 42px color-mix(in srgb, #1d1738 10%, transparent);
+  /* Fallback defaults; the plugin injects per-category overrides
+     from the settings tab (--tx-fs-canvas/body/note/label/meta). */
+  --tx-fs-root: 17px;
+  --tx-fs-canvas: 20px;
+  --tx-fs-body: 17px;
+  --tx-fs-note: 17px;
+  --tx-fs-secondary: calc(var(--tx-fs-body) * .92);
+  --tx-fs-label: 14px;
+  --tx-fs-meta: 13px;
   box-sizing: border-box;
   container-type: inline-size;
   height: 100%;
   min-height: 0;
   overflow: auto;
+  -webkit-user-select: text;
+  user-select: text;
   color: var(--tx-ink);
   background:
     radial-gradient(circle at 78% -12%, color-mix(in srgb, var(--tx-accent) 8%, transparent), transparent 34rem),
@@ -509,6 +520,8 @@
 /* Capture */
 
 .translation-capture-modal {
+  -webkit-user-select: text;
+  user-select: text;
   width: min(640px, calc(100vw - 32px));
   border: 1px solid color-mix(in srgb, var(--text-normal) 12%, transparent);
   border-radius: 22px;
@@ -1073,7 +1086,9 @@
 
 .translation-unit-editor {
   width: 100%;
-  min-height: 176px;
+  min-height: 120px;
+  max-height: 240px;
+  overflow-y: auto;
   padding: 0;
   border: 0;
   color: var(--tx-ink);
@@ -1732,7 +1747,7 @@
 }
 
 /* Translation workbench control system and visual QA baseline */
-.translation-task-shell {
+.translation-app {
   --tx-control-height: 34px;
   --tx-control-radius: 9px;
   --tx-control-border: color-mix(in srgb, var(--text-normal) 13%, transparent);
@@ -1740,7 +1755,7 @@
   --tx-panel-fill: color-mix(in srgb, var(--background-secondary) 72%, var(--background-primary));
 }
 
-.translation-task-shell button {
+.translation-app button {
   appearance: none;
   margin: 0;
   background-image: none !important;
@@ -1749,9 +1764,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.translation-task-shell button:focus-visible,
-.translation-task-shell input:focus-visible,
-.translation-task-shell textarea:focus-visible {
+.translation-app button:focus-visible,
+.translation-app input:focus-visible,
+.translation-app textarea:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--tx-accent) 72%, transparent);
   outline-offset: 2px;
 }
@@ -1760,7 +1775,7 @@
   outline: none;
 }
 
-.translation-task-shell button:disabled {
+.translation-app button:disabled {
   cursor: default;
 }
 
@@ -1823,7 +1838,7 @@
 }
 
 .translation-control-button.is-primary,
-.translation-task-shell .translation-control-button.is-primary {
+.translation-app .translation-control-button.is-primary {
   border-color: var(--tx-accent);
   color: var(--text-on-accent);
   background: var(--tx-accent);
@@ -1842,7 +1857,7 @@
   opacity: 1;
 }
 
-.translation-task-shell .translation-icon-button {
+.translation-app .translation-icon-button {
   display: inline-grid;
   place-items: center;
   width: 30px;
@@ -1856,13 +1871,13 @@
   transition: border-color 130ms ease, color 130ms ease, background 130ms ease;
 }
 
-.translation-task-shell .translation-icon-button:hover:not(:disabled) {
+.translation-app .translation-icon-button:hover:not(:disabled) {
   border-color: var(--tx-control-border);
   color: var(--tx-ink);
   background: var(--tx-control-hover);
 }
 
-.translation-task-shell .translation-icon-button svg {
+.translation-app .translation-icon-button svg {
   width: 14px;
   height: 14px;
   stroke-width: 1.8;
@@ -1901,7 +1916,7 @@
   padding: 0 8px 24px;
 }
 
-.translation-task-shell .translation-unit-nav-item {
+.translation-app .translation-unit-nav-item {
   position: relative;
   min-height: 52px;
   margin: 1px 0;
@@ -1914,19 +1929,19 @@
   transition: border-color 130ms ease, color 130ms ease, background 130ms ease;
 }
 
-.translation-task-shell .translation-unit-nav-item:hover {
+.translation-app .translation-unit-nav-item:hover {
   border-color: transparent;
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--text-normal) 4%, transparent);
 }
 
-.translation-task-shell .translation-unit-nav-item.is-active {
+.translation-app .translation-unit-nav-item.is-active {
   border-color: color-mix(in srgb, var(--tx-accent) 16%, transparent);
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--tx-accent) 8%, var(--background-primary));
 }
 
-.translation-task-shell .translation-unit-nav-item.is-active::before {
+.translation-app .translation-unit-nav-item.is-active::before {
   position: absolute;
   top: 10px;
   bottom: 10px;
@@ -2049,7 +2064,7 @@
   gap: 6px;
 }
 
-.translation-task-shell .translation-relation-tag {
+.translation-app .translation-relation-tag {
   min-height: 26px;
   padding: 0 8px;
   border: 1px solid color-mix(in srgb, var(--tx-accent) 18%, transparent);
@@ -2060,13 +2075,13 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-relation-tag:hover {
+.translation-app .translation-relation-tag:hover {
   border-color: color-mix(in srgb, var(--tx-accent) 32%, transparent);
   background: color-mix(in srgb, var(--tx-accent) 13%, transparent);
 }
 
-.translation-task-shell .translation-tag-add-button,
-.translation-task-shell .translation-notes-empty-action {
+.translation-app .translation-tag-add-button,
+.translation-app .translation-notes-empty-action {
   display: inline-flex;
   align-items: center;
   justify-self: start;
@@ -2082,8 +2097,8 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-tag-add-button:hover,
-.translation-task-shell .translation-notes-empty-action:hover {
+.translation-app .translation-tag-add-button:hover,
+.translation-app .translation-notes-empty-action:hover {
   border-color: transparent;
   color: var(--tx-accent-strong);
   background: color-mix(in srgb, var(--tx-accent) 7%, transparent);
@@ -2121,7 +2136,7 @@
   margin-top: 10px;
 }
 
-.translation-task-shell .translation-danger-action {
+.translation-app .translation-danger-action {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2136,7 +2151,7 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-danger-action:hover {
+.translation-app .translation-danger-action:hover {
   color: var(--tx-red);
   background: color-mix(in srgb, var(--tx-red) 7%, transparent);
 }
@@ -2174,7 +2189,7 @@
   background: var(--background-primary);
 }
 
-.translation-task-shell .translation-control-button.is-navigation {
+.translation-app .translation-control-button.is-navigation {
   height: 34px;
   min-height: 34px;
   padding: 0 12px;
@@ -2185,16 +2200,16 @@
   font-weight: 570;
 }
 
-.translation-task-shell .translation-control-button.is-navigation + .translation-control-button.is-navigation {
+.translation-app .translation-control-button.is-navigation + .translation-control-button.is-navigation {
   border-left: 1px solid var(--tx-control-border);
 }
 
-.translation-task-shell .translation-control-button.is-navigation:hover:not(:disabled) {
+.translation-app .translation-control-button.is-navigation:hover:not(:disabled) {
   color: var(--tx-ink);
   background: var(--tx-control-hover);
 }
 
-.translation-task-shell .translation-control-button.is-navigation:disabled {
+.translation-app .translation-control-button.is-navigation:disabled {
   color: var(--tx-faint);
   background: color-mix(in srgb, var(--text-normal) 2%, transparent);
   opacity: .62;
@@ -2231,12 +2246,12 @@
   border-radius: 10px;
 }
 
-.translation-task-shell .translation-tag-picker-row {
+.translation-app .translation-tag-picker-row {
   border-radius: 6px;
   color: var(--tx-ink);
 }
 
-.translation-task-shell .translation-tag-picker-row:hover {
+.translation-app .translation-tag-picker-row:hover {
   background: color-mix(in srgb, var(--tx-accent) 7%, transparent);
 }
 
@@ -5547,11 +5562,11 @@
 }
 
 /* Final workbench component pass: keep this after all legacy translation styles. */
-.translation-task-shell .translation-unit-nav {
+.translation-app .translation-unit-nav {
   background: var(--tx-panel-fill);
 }
 
-.translation-task-shell .translation-unit-nav-heading {
+.translation-app .translation-unit-nav-heading {
   padding: 25px 18px 10px;
   color: color-mix(in srgb, var(--tx-muted) 78%, transparent);
   font-size: 9px;
@@ -5559,11 +5574,11 @@
   letter-spacing: .13em;
 }
 
-.translation-task-shell .translation-unit-nav-list {
+.translation-app .translation-unit-nav-list {
   padding: 0 8px 24px;
 }
 
-.translation-task-shell .translation-unit-nav-item {
+.translation-app .translation-unit-nav-item {
   position: relative;
   min-height: 52px;
   margin: 1px 0;
@@ -5575,90 +5590,90 @@
   background: transparent;
 }
 
-.translation-task-shell .translation-unit-nav-item:hover {
+.translation-app .translation-unit-nav-item:hover {
   border-color: transparent;
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--text-normal) 4%, transparent);
 }
 
-.translation-task-shell .translation-unit-nav-item.is-active {
+.translation-app .translation-unit-nav-item.is-active {
   border-color: color-mix(in srgb, var(--tx-accent) 16%, transparent);
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--tx-accent) 8%, var(--background-primary));
   box-shadow: none;
 }
 
-.translation-task-shell .translation-unit-workspace {
+.translation-app .translation-unit-workspace {
   padding-top: 34px;
 }
 
-.translation-task-shell .translation-unit-header {
+.translation-app .translation-unit-header {
   margin-bottom: 16px;
 }
 
-.translation-task-shell .translation-unified-pair > .translation-text-card,
-.translation-task-shell .translation-unified-pair > .translation-editor-card {
+.translation-app .translation-unified-pair > .translation-text-card,
+.translation-app .translation-unified-pair > .translation-editor-card {
   border-color: color-mix(in srgb, var(--text-normal) 12%, transparent);
 }
 
-.translation-task-shell .translation-unified-pair > .translation-text-card {
+.translation-app .translation-unified-pair > .translation-text-card {
   background: color-mix(in srgb, var(--background-primary) 98%, var(--tx-accent));
 }
 
-.translation-task-shell .translation-unified-pair > .translation-editor-card {
+.translation-app .translation-unified-pair > .translation-editor-card {
   background: color-mix(in srgb, var(--tx-accent) 5%, var(--background-primary));
 }
 
-.translation-task-shell .translation-unified-card:focus-within {
+.translation-app .translation-unified-card:focus-within {
   border-color: color-mix(in srgb, var(--tx-accent) 44%, var(--tx-line));
   box-shadow: inset 3px 0 0 color-mix(in srgb, var(--tx-accent) 72%, transparent);
 }
 
-.translation-task-shell .translation-context-sidebar {
+.translation-app .translation-context-sidebar {
   padding: 21px 18px 24px;
   background: var(--tx-panel-fill);
 }
 
-.translation-task-shell .translation-context-sidebar .translation-relation-inspector,
-.translation-task-shell .translation-context-sidebar .translation-relation-composer.is-drafting,
-.translation-task-shell .translation-context-placeholder {
+.translation-app .translation-context-sidebar .translation-relation-inspector,
+.translation-app .translation-context-sidebar .translation-relation-composer.is-drafting,
+.translation-app .translation-context-placeholder {
   padding-bottom: 20px;
 }
 
-.translation-task-shell .translation-relation-inspector-header {
+.translation-app .translation-relation-inspector-header {
   grid-template-columns: minmax(0, 1fr) 28px;
   gap: 10px;
 }
 
-.translation-task-shell .translation-relation-inspector-header .translation-icon-button {
+.translation-app .translation-relation-inspector-header .translation-icon-button {
   width: 27px;
   min-width: 27px;
   height: 27px;
 }
 
-.translation-task-shell .translation-relation-inspector-summary {
+.translation-app .translation-relation-inspector-summary {
   font-size: 12px;
   font-weight: 520;
   line-height: 1.6;
 }
 
-.translation-task-shell .translation-field-label,
-.translation-task-shell .translation-notes-title {
+.translation-app .translation-field-label,
+.translation-app .translation-notes-title {
   color: var(--tx-muted);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: .02em;
 }
 
-.translation-task-shell .translation-relation-tag-section {
+.translation-app .translation-relation-tag-section {
   margin-top: 17px;
 }
 
-.translation-task-shell .translation-relation-tags {
+.translation-app .translation-relation-tags {
   gap: 6px;
 }
 
-.translation-task-shell .translation-relation-tag {
+.translation-app .translation-relation-tag {
   min-height: 26px;
   padding: 0 8px;
   border: 1px solid color-mix(in srgb, var(--tx-accent) 18%, transparent);
@@ -5669,13 +5684,13 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-relation-tag:hover {
+.translation-app .translation-relation-tag:hover {
   border-color: color-mix(in srgb, var(--tx-accent) 32%, transparent);
   background: color-mix(in srgb, var(--tx-accent) 13%, transparent);
 }
 
-.translation-task-shell .translation-tag-add-button,
-.translation-task-shell .translation-notes-empty-action {
+.translation-app .translation-tag-add-button,
+.translation-app .translation-notes-empty-action {
   min-width: 0;
   min-height: 28px;
   padding: 0 7px;
@@ -5687,15 +5702,15 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-tag-add-button:hover,
-.translation-task-shell .translation-notes-empty-action:hover {
+.translation-app .translation-tag-add-button:hover,
+.translation-app .translation-notes-empty-action:hover {
   border-color: transparent;
   color: var(--tx-accent-strong);
   background: color-mix(in srgb, var(--tx-accent) 7%, transparent);
 }
 
-.translation-task-shell .translation-relation-comment textarea,
-.translation-task-shell .translation-note-composer input {
+.translation-app .translation-relation-comment textarea,
+.translation-app .translation-note-composer input {
   border: 1px solid var(--tx-control-border);
   border-radius: 8px;
   color: var(--tx-ink);
@@ -5703,18 +5718,18 @@
   box-shadow: none !important;
 }
 
-.translation-task-shell .translation-relation-comment textarea:focus,
-.translation-task-shell .translation-note-composer input:focus {
+.translation-app .translation-relation-comment textarea:focus,
+.translation-app .translation-note-composer input:focus {
   border-color: color-mix(in srgb, var(--tx-accent) 58%, transparent);
   background: var(--background-primary);
 }
 
-.translation-task-shell .translation-relation-inspector-footer {
+.translation-app .translation-relation-inspector-footer {
   justify-content: flex-start;
   margin-top: 10px;
 }
 
-.translation-task-shell .translation-danger-action {
+.translation-app .translation-danger-action {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -5729,12 +5744,12 @@
   font-weight: 560;
 }
 
-.translation-task-shell .translation-danger-action:hover {
+.translation-app .translation-danger-action:hover {
   color: var(--tx-red);
   background: color-mix(in srgb, var(--tx-red) 7%, transparent);
 }
 
-.translation-task-shell .translation-work-footer-navigation {
+.translation-app .translation-work-footer-navigation {
   gap: 0;
   overflow: hidden;
   border: 1px solid var(--tx-control-border);
@@ -5742,7 +5757,7 @@
   background: var(--background-primary);
 }
 
-.translation-task-shell .translation-control-button.is-navigation {
+.translation-app .translation-control-button.is-navigation {
   min-width: 0;
   height: 34px;
   min-height: 34px;
@@ -5754,187 +5769,187 @@
   font-weight: 570;
 }
 
-.translation-task-shell .translation-control-button.is-navigation + .translation-control-button.is-navigation {
+.translation-app .translation-control-button.is-navigation + .translation-control-button.is-navigation {
   border-left: 1px solid var(--tx-control-border);
 }
 
-.translation-task-shell .translation-control-button.is-navigation:hover:not(:disabled) {
+.translation-app .translation-control-button.is-navigation:hover:not(:disabled) {
   color: var(--tx-ink);
   background: var(--tx-control-hover);
 }
 
-.translation-task-shell .translation-control-button.is-navigation:disabled {
+.translation-app .translation-control-button.is-navigation:disabled {
   color: var(--tx-faint);
   background: color-mix(in srgb, var(--text-normal) 2%, transparent);
   opacity: .62;
 }
 
-.translation-task-shell .translation-unit-workspace .translation-stage-complete {
+.translation-app .translation-unit-workspace .translation-stage-complete {
   min-width: 0;
   margin-left: 12px;
   padding: 0 14px;
 }
 
-.translation-task-shell .translation-selection-popover {
+.translation-app .translation-selection-popover {
   gap: 2px;
   padding: 3px;
   border-color: var(--tx-control-border);
   border-radius: 9px;
 }
 
-.translation-task-shell .translation-tag-picker {
+.translation-app .translation-tag-picker {
   border-color: var(--tx-control-border);
   border-radius: 10px;
 }
 
 @container (max-width: 840px) {
-  .translation-task-shell .translation-context-sidebar {
+  .translation-app .translation-context-sidebar {
     background: transparent;
   }
 }
 
 /* Readable workbench type scale */
-.translation-task-shell {
+.translation-app {
   --tx-control-height: 36px;
 }
 
-.translation-task-shell .translation-work-layout {
+.translation-app .translation-work-layout {
   grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
 }
 
-.translation-task-shell .translation-unified-layout,
-.translation-task-shell .translation-unified-layout.is-back-translation {
+.translation-app .translation-unified-layout,
+.translation-app .translation-unified-layout.is-back-translation {
   grid-template-columns: minmax(0, 1fr) 300px;
 }
 
-.translation-task-shell .translation-unit-header {
+.translation-app .translation-unit-header {
   margin-right: 324px;
 }
 
-.translation-task-shell .translation-task-stage {
+.translation-app .translation-task-stage {
   font-size: 11px;
   letter-spacing: .09em;
 }
 
-.translation-task-shell .translation-stage-step {
+.translation-app .translation-stage-step {
   font-size: 10.5px;
 }
 
-.translation-task-shell .translation-unit-nav-heading {
+.translation-app .translation-unit-nav-heading {
   font-size: 11px;
   letter-spacing: .1em;
 }
 
-.translation-task-shell .translation-unit-number {
+.translation-app .translation-unit-number {
   font-size: 10.5px;
 }
 
-.translation-task-shell .translation-unit-preview {
+.translation-app .translation-unit-preview {
   font-size: 12.5px;
   line-height: 1.46;
 }
 
-.translation-task-shell .translation-unit-header h3 {
+.translation-app .translation-unit-header h3 {
   font-size: 21px;
 }
 
-.translation-task-shell .translation-unified-hint {
+.translation-app .translation-unified-hint {
   font-size: 11.5px;
 }
 
-.translation-task-shell .translation-card-label,
-.translation-task-shell .translation-reference-kicker {
+.translation-app .translation-card-label,
+.translation-app .translation-reference-kicker {
   font-size: 11.5px;
   letter-spacing: .08em;
 }
 
-.translation-task-shell .translation-control-button {
+.translation-app .translation-control-button {
   min-height: var(--tx-control-height);
   padding-right: 14px;
   padding-left: 14px;
   font-size: 13px;
 }
 
-.translation-task-shell .translation-control-button.is-quiet {
+.translation-app .translation-control-button.is-quiet {
   min-height: 32px;
   font-size: 12px;
 }
 
-.translation-task-shell .translation-control-button svg {
+.translation-app .translation-control-button svg {
   width: 14px;
   height: 14px;
 }
 
-.translation-task-shell .translation-icon-button svg {
+.translation-app .translation-icon-button svg {
   width: 15px;
   height: 15px;
 }
 
-.translation-task-shell .translation-context-placeholder-value {
+.translation-app .translation-context-placeholder-value {
   font-size: 12.5px;
 }
 
-.translation-task-shell .translation-relation-inspector-summary {
+.translation-app .translation-relation-inspector-summary {
   font-size: 13.5px;
 }
 
-.translation-task-shell .translation-field-label,
-.translation-task-shell .translation-notes-title {
+.translation-app .translation-field-label,
+.translation-app .translation-notes-title {
   font-size: 11.5px;
 }
 
-.translation-task-shell .translation-relation-tag {
+.translation-app .translation-relation-tag {
   min-height: 28px;
   padding-right: 10px;
   padding-left: 10px;
   font-size: 12px;
 }
 
-.translation-task-shell .translation-tag-add-button,
-.translation-task-shell .translation-notes-empty-action,
-.translation-task-shell .translation-danger-action {
+.translation-app .translation-tag-add-button,
+.translation-app .translation-notes-empty-action,
+.translation-app .translation-danger-action {
   min-height: 32px;
   padding-right: 8px;
   padding-left: 8px;
   font-size: 12.5px;
 }
 
-.translation-task-shell .translation-relation-comment textarea,
-.translation-task-shell .translation-note-composer input {
+.translation-app .translation-relation-comment textarea,
+.translation-app .translation-note-composer input {
   font-size: 13px;
 }
 
-.translation-task-shell .translation-relation-comment textarea {
+.translation-app .translation-relation-comment textarea {
   min-height: 92px;
   line-height: 1.55;
 }
 
-.translation-task-shell .translation-note-row {
+.translation-app .translation-note-row {
   font-size: 12.5px;
   line-height: 1.5;
 }
 
-.translation-task-shell .translation-readonly-notes > div {
+.translation-app .translation-readonly-notes > div {
   font-size: 12.5px;
   line-height: 1.55;
 }
 
-.translation-task-shell .translation-relation-instruction,
-.translation-task-shell .translation-relation-draft-side,
-.translation-task-shell .translation-relation-draft-empty,
-.translation-task-shell .translation-relation-draft-fragment {
+.translation-app .translation-relation-instruction,
+.translation-app .translation-relation-draft-side,
+.translation-app .translation-relation-draft-empty,
+.translation-app .translation-relation-draft-fragment {
   font-size: 12px;
 }
 
-.translation-task-shell .translation-relation-draft-fragment {
+.translation-app .translation-relation-draft-fragment {
   min-height: 30px;
 }
 
-.translation-task-shell .translation-work-footer-progress {
+.translation-app .translation-work-footer-progress {
   font-size: 11.5px;
 }
 
-.translation-task-shell .translation-control-button.is-navigation {
+.translation-app .translation-control-button.is-navigation {
   height: var(--tx-control-height);
   min-height: var(--tx-control-height);
   padding-right: 13px;
@@ -5942,65 +5957,65 @@
   font-size: 13px;
 }
 
-.translation-task-shell .translation-tag-picker-search input {
+.translation-app .translation-tag-picker-search input {
   font-size: 13px;
 }
 
-.translation-task-shell .translation-tag-picker-heading {
+.translation-app .translation-tag-picker-heading {
   font-size: 11px;
 }
 
-.translation-task-shell .translation-tag-picker-row {
+.translation-app .translation-tag-picker-row {
   min-height: 42px;
   font-size: 12.5px;
 }
 
-.translation-task-shell .translation-tag-picker-row small,
-.translation-task-shell .translation-tag-picker-empty,
-.translation-task-shell .translation-tag-native-context {
+.translation-app .translation-tag-picker-row small,
+.translation-app .translation-tag-picker-empty,
+.translation-app .translation-tag-native-context {
   font-size: 11.5px;
 }
 
-.translation-task-shell .translation-back-material .translation-readonly-notes {
+.translation-app .translation-back-material .translation-readonly-notes {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--tx-line);
 }
 
 @container (max-width: 840px) {
-  .translation-task-shell .translation-work-layout,
-  .translation-task-shell .translation-unified-layout,
-  .translation-task-shell .translation-unified-layout.is-back-translation {
+  .translation-app .translation-work-layout,
+  .translation-app .translation-unified-layout,
+  .translation-app .translation-unified-layout.is-back-translation {
     grid-template-columns: 1fr;
   }
 
-  .translation-task-shell .translation-unit-header {
+  .translation-app .translation-unit-header {
     margin-right: 0;
   }
 }
 
 /* Frozen stage artifacts and single comparison note */
-.translation-task-shell .translation-relation-inspector.is-readonly .translation-relation-tag-section {
+.translation-app .translation-relation-inspector.is-readonly .translation-relation-tag-section {
   margin-top: 18px;
 }
 
-.translation-task-shell .translation-relation-tag.is-readonly {
+.translation-app .translation-relation-tag.is-readonly {
   cursor: default;
 }
 
-.translation-task-shell .translation-relation-empty {
+.translation-app .translation-relation-empty {
   color: var(--tx-faint);
   font-size: 12.5px;
 }
 
-.translation-task-shell .translation-relation-comment.is-readonly {
+.translation-app .translation-relation-comment.is-readonly {
   display: grid;
   grid-template-columns: 1fr;
   gap: 7px;
   margin-top: 18px;
 }
 
-.translation-task-shell .translation-relation-comment-value {
+.translation-app .translation-relation-comment-value {
   padding: 10px 11px;
   border-left: 2px solid color-mix(in srgb, var(--tx-accent) 38%, transparent);
   color: var(--tx-ink);
@@ -6011,11 +6026,11 @@
   white-space: pre-wrap;
 }
 
-.translation-task-shell .translation-relation-comment-value.is-empty {
+.translation-app .translation-relation-comment-value.is-empty {
   color: var(--tx-faint);
 }
 
-.translation-task-shell .translation-forward-reference.is-main {
+.translation-app .translation-forward-reference.is-main {
   align-self: stretch;
   margin-top: 18px;
   padding: 21px 22px;
@@ -6024,7 +6039,7 @@
   background: color-mix(in srgb, var(--background-secondary) 54%, var(--background-primary));
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-text {
+.translation-app .translation-forward-reference.is-main .translation-reference-text {
   color: var(--tx-ink);
   font-family: var(--font-text);
   font-size: 17px;
@@ -6032,29 +6047,29 @@
   white-space: pre-wrap;
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relations {
+.translation-app .translation-forward-reference.is-main .translation-reference-relations {
   margin-top: 17px;
   padding-top: 14px;
   border-top: 1px solid var(--tx-line);
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relation {
+.translation-app .translation-forward-reference.is-main .translation-reference-relation {
   grid-template-columns: 22px minmax(0, 1fr);
   font-size: 12.5px;
   line-height: 1.55;
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-note {
+.translation-app .translation-forward-reference.is-main .translation-reference-note {
   font-size: 12px;
 }
 
-.translation-task-shell .translation-comparison-note {
+.translation-app .translation-comparison-note {
   margin-top: 0;
   padding-top: 20px;
   border-top: 1px solid var(--tx-line);
 }
 
-.translation-task-shell .translation-comparison-note-editor {
+.translation-app .translation-comparison-note-editor {
   width: 100%;
   min-height: 138px;
   margin-top: 10px;
@@ -6070,29 +6085,29 @@
   resize: vertical;
 }
 
-.translation-task-shell .translation-comparison-note-editor:hover {
+.translation-app .translation-comparison-note-editor:hover {
   border-color: color-mix(in srgb, var(--text-normal) 21%, transparent);
 }
 
-.translation-task-shell .translation-comparison-note-editor:focus {
+.translation-app .translation-comparison-note-editor:focus {
   border-color: color-mix(in srgb, var(--tx-accent) 58%, transparent);
   background: var(--background-primary);
 }
 
 /* One sentence-level note belongs to the central record, not the relation rail. */
-.translation-task-shell .translation-unified-pair > .translation-editor-card:has(+ .translation-sentence-note) {
+.translation-app .translation-unified-pair > .translation-editor-card:has(+ .translation-sentence-note) {
   border-bottom: 0;
   border-radius: 0;
 }
 
-.translation-task-shell .translation-sentence-note {
+.translation-app .translation-sentence-note {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--text-normal) 12%, transparent);
   border-radius: 0 0 14px 14px;
   background: color-mix(in srgb, var(--tx-accent) 3%, var(--background-primary));
 }
 
-.translation-task-shell .translation-sentence-note-summary {
+.translation-app .translation-sentence-note-summary {
   display: grid;
   grid-template-columns: 18px auto minmax(0, 1fr) 16px;
   align-items: center;
@@ -6105,36 +6120,36 @@
   user-select: none;
 }
 
-.translation-task-shell .translation-sentence-note-summary::-webkit-details-marker {
+.translation-app .translation-sentence-note-summary::-webkit-details-marker {
   display: none;
 }
 
-.translation-task-shell .translation-sentence-note-summary:hover {
+.translation-app .translation-sentence-note-summary:hover {
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--tx-accent) 5%, transparent);
 }
 
-.translation-task-shell .translation-sentence-note-icon,
-.translation-task-shell .translation-sentence-note-chevron {
+.translation-app .translation-sentence-note-icon,
+.translation-app .translation-sentence-note-chevron {
   display: grid;
   place-items: center;
   color: var(--tx-faint);
 }
 
-.translation-task-shell .translation-sentence-note-icon svg,
-.translation-task-shell .translation-sentence-note-chevron svg {
+.translation-app .translation-sentence-note-icon svg,
+.translation-app .translation-sentence-note-chevron svg {
   width: 14px;
   height: 14px;
 }
 
-.translation-task-shell .translation-sentence-note-label {
+.translation-app .translation-sentence-note-label {
   color: var(--tx-muted);
   font-size: 12px;
   font-weight: 650;
   white-space: nowrap;
 }
 
-.translation-task-shell .translation-sentence-note-preview {
+.translation-app .translation-sentence-note-preview {
   overflow: hidden;
   color: var(--tx-ink);
   font-size: 12.5px;
@@ -6142,23 +6157,27 @@
   white-space: nowrap;
 }
 
-.translation-task-shell .translation-sentence-note-preview.is-empty {
+.translation-app .translation-sentence-note-preview.is-empty {
   color: var(--tx-faint);
 }
 
-.translation-task-shell .translation-sentence-note-chevron {
+.translation-app .translation-sentence-note-chevron {
   transition: transform .16s ease;
 }
 
-.translation-task-shell .translation-sentence-note[open] .translation-sentence-note-chevron {
+.translation-app .translation-sentence-note[open] .translation-sentence-note-preview {
+  visibility: hidden;
+}
+
+.translation-app .translation-sentence-note[open] .translation-sentence-note-chevron {
   transform: rotate(180deg);
 }
 
-.translation-task-shell .translation-sentence-note-editor-wrap {
+.translation-app .translation-sentence-note-editor-wrap {
   padding: 0 16px 12px 42px;
 }
 
-.translation-task-shell .translation-sentence-note-editor {
+.translation-app .translation-sentence-note-editor {
   width: 100%;
   min-height: 64px;
   max-height: 132px;
@@ -6174,22 +6193,22 @@
   resize: vertical;
 }
 
-.translation-task-shell .translation-sentence-note-editor:focus {
+.translation-app .translation-sentence-note-editor:focus {
   border-color: color-mix(in srgb, var(--tx-accent) 58%, transparent);
 }
 
-.translation-task-shell .translation-tag-picker-row.is-keyboard-active {
+.translation-app .translation-tag-picker-row.is-keyboard-active {
   color: var(--tx-ink);
   background: var(--tx-accent-soft);
   box-shadow: inset 2px 0 0 color-mix(in srgb, var(--tx-accent) 72%, transparent);
 }
 
 /* The frozen initial translation links its inline fragments to the notes below. */
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-text [data-reference-number] {
+.translation-app .translation-forward-reference.is-main .translation-reference-text [data-reference-number] {
   cursor: pointer;
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-text [data-reference-number]::after {
+.translation-app .translation-forward-reference.is-main .translation-reference-text [data-reference-number]::after {
   content: attr(data-reference-number);
   display: inline-block;
   margin-left: 2px;
@@ -6201,15 +6220,15 @@
   vertical-align: super;
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-text [data-reference-number]:focus-visible,
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-text [data-reference-number].is-reference-active {
+.translation-app .translation-forward-reference.is-main .translation-reference-text [data-reference-number]:focus-visible,
+.translation-app .translation-forward-reference.is-main .translation-reference-text [data-reference-number].is-reference-active {
   border-radius: 3px;
   outline: none;
   background: color-mix(in srgb, var(--tx-accent) 17%, transparent);
   box-shadow: inset 0 -2px 0 var(--tx-accent);
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relation {
+.translation-app .translation-forward-reference.is-main .translation-reference-relation {
   width: 100%;
   min-height: 36px;
   padding: 7px 8px;
@@ -6221,24 +6240,24 @@
   text-align: left;
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relation:hover,
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relation.is-reference-active {
+.translation-app .translation-forward-reference.is-main .translation-reference-relation:hover,
+.translation-app .translation-forward-reference.is-main .translation-reference-relation.is-reference-active {
   color: var(--tx-ink);
   background: color-mix(in srgb, var(--tx-accent) 7%, transparent);
 }
 
-.translation-task-shell .translation-forward-reference.is-main .translation-reference-relation.is-reference-active {
+.translation-app .translation-forward-reference.is-main .translation-reference-relation.is-reference-active {
   box-shadow: inset 2px 0 0 color-mix(in srgb, var(--tx-accent) 70%, transparent);
 }
 
 /* Full-text workbench: continuous document presentation over fixed unit data. */
-.translation-task-shell .translation-unit-header-tools {
+.translation-app .translation-unit-header-tools {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.translation-task-shell .translation-workbench-view-switch {
+.translation-app .translation-workbench-view-switch {
   display: inline-flex;
   align-items: center;
   padding: 2px;
@@ -6247,7 +6266,7 @@
   background: color-mix(in srgb, var(--background-secondary) 70%, var(--background-primary));
 }
 
-.translation-task-shell .translation-workbench-view-switch button {
+.translation-app .translation-workbench-view-switch button {
   min-width: 52px;
   height: 31px;
   padding: 0 10px;
@@ -6260,41 +6279,41 @@
   font-weight: 600;
 }
 
-.translation-task-shell .translation-workbench-view-switch button:hover {
+.translation-app .translation-workbench-view-switch button:hover {
   color: var(--tx-ink);
 }
 
-.translation-task-shell .translation-workbench-view-switch button.is-active {
+.translation-app .translation-workbench-view-switch button.is-active {
   color: var(--tx-ink);
   background: var(--background-primary);
   box-shadow: 0 1px 3px color-mix(in srgb, #000 10%, transparent);
 }
 
-.translation-task-shell .translation-work-layout.is-full-mode {
+.translation-app .translation-work-layout.is-full-mode {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.translation-task-shell .translation-work-layout.is-full-mode .translation-unit-workspace {
+.translation-app .translation-work-layout.is-full-mode .translation-unit-workspace {
   width: min(1320px, calc(100% - 64px));
 }
 
-.translation-task-shell .translation-work-layout.is-full-mode .translation-unit-header {
+.translation-app .translation-work-layout.is-full-mode .translation-unit-header {
   margin-right: 0;
 }
 
-.translation-task-shell .translation-full-layout {
+.translation-app .translation-full-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: 0;
   align-items: start;
 }
 
-.translation-task-shell .translation-full-document {
+.translation-app .translation-full-document {
   min-width: 0;
   padding-right: 30px;
 }
 
-.translation-task-shell .translation-full-document-header {
+.translation-app .translation-full-document-header {
   display: flex;
   gap: 14px;
   margin-bottom: 8px;
@@ -6306,13 +6325,13 @@
   letter-spacing: .04em;
 }
 
-.translation-task-shell .translation-full-block {
+.translation-app .translation-full-block {
   position: relative;
   padding: 24px 0 26px 42px;
   border-bottom: 1px solid var(--tx-line);
 }
 
-.translation-task-shell .translation-full-block-number {
+.translation-app .translation-full-block-number {
   position: absolute;
   top: 28px;
   left: 2px;
@@ -6323,23 +6342,23 @@
   letter-spacing: .05em;
 }
 
-.translation-task-shell .translation-full-layer {
+.translation-app .translation-full-layer {
   position: relative;
   padding: 13px 15px 15px;
   border: 1px solid transparent;
   border-radius: 11px;
 }
 
-.translation-task-shell .translation-full-layer + .translation-full-layer {
+.translation-app .translation-full-layer + .translation-full-layer {
   margin-top: 8px;
 }
 
-.translation-task-shell .translation-full-layer:has(.translation-full-flow.is-editable) {
+.translation-app .translation-full-layer:has(.translation-full-flow.is-editable) {
   border-color: color-mix(in srgb, var(--tx-accent) 10%, var(--tx-line));
   background: color-mix(in srgb, var(--tx-accent) 4%, var(--background-primary));
 }
 
-.translation-task-shell .translation-full-layer-label {
+.translation-app .translation-full-layer-label {
   margin-bottom: 7px;
   color: var(--tx-faint);
   font-size: 10.5px;
@@ -6347,7 +6366,7 @@
   letter-spacing: .06em;
 }
 
-.translation-task-shell .translation-full-flow {
+.translation-app .translation-full-flow {
   color: var(--tx-ink);
   font-family: var(--font-text);
   font-size: clamp(17px, 1.8vw, 21px);
@@ -6356,66 +6375,66 @@
   white-space: pre-wrap;
 }
 
-.translation-task-shell .translation-full-unit {
+.translation-app .translation-full-unit {
   position: relative;
   padding: 2px 1px 3px;
   border-radius: 5px;
   transition: color .15s ease, background .15s ease, box-shadow .15s ease;
 }
 
-.translation-task-shell .translation-full-unit:hover {
+.translation-app .translation-full-unit:hover {
   background: color-mix(in srgb, var(--tx-accent) 6%, transparent);
 }
 
-.translation-task-shell .translation-full-unit.is-active {
+.translation-app .translation-full-unit.is-active {
   background: color-mix(in srgb, var(--tx-accent) 9%, transparent);
   box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--tx-accent) 62%, transparent);
 }
 
-.translation-task-shell .translation-full-unit-surface {
+.translation-app .translation-full-unit-surface {
   min-width: 1px;
   outline: none;
 }
 
-.translation-task-shell .translation-full-unit-surface.is-editable {
+.translation-app .translation-full-unit-surface.is-editable {
   cursor: text;
 }
 
-.translation-task-shell .translation-full-unit-surface.is-editable:empty {
+.translation-app .translation-full-unit-surface.is-editable:empty {
   display: inline-block;
   min-width: 68px;
 }
 
-.translation-task-shell .translation-full-unit-surface.is-editable:empty::before {
+.translation-app .translation-full-unit-surface.is-editable:empty::before {
   content: attr(data-placeholder);
   color: var(--tx-faint);
   font-size: .72em;
   pointer-events: none;
 }
 
-.translation-task-shell .translation-full-unit-surface.is-editable:focus {
+.translation-app .translation-full-unit-surface.is-editable:focus {
   background: color-mix(in srgb, var(--background-primary) 74%, transparent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--tx-accent) 10%, transparent);
 }
 
-.translation-task-shell .translation-full-separator {
+.translation-app .translation-full-separator {
   white-space: pre-wrap;
   user-select: none;
 }
 
-.translation-task-shell .translation-full-unit-surface .is-related {
+.translation-app .translation-full-unit-surface .is-related {
   padding: 1px 0;
   border-bottom: 2px solid hsl(calc(256 + var(--relation-index) * 33) 68% 64%);
   background: hsl(calc(256 + var(--relation-index) * 33) 75% 65% / .08);
 }
 
-.translation-task-shell .translation-full-unit-surface .is-draft-range {
+.translation-app .translation-full-unit-surface .is-draft-range {
   border-radius: 3px;
   background: color-mix(in srgb, var(--tx-accent) 27%, transparent);
   box-shadow: inset 0 -3px 0 var(--tx-accent);
 }
 
-.translation-task-shell .translation-full-reference {
+.translation-app .translation-full-reference {
   margin: 10px 0 0;
   border: 1px solid var(--tx-line);
   border-radius: 10px;
@@ -6423,7 +6442,7 @@
   background: color-mix(in srgb, var(--background-secondary) 42%, var(--background-primary));
 }
 
-.translation-task-shell .translation-full-reference > summary {
+.translation-app .translation-full-reference > summary {
   padding: 10px 14px;
   cursor: pointer;
   font-size: 11.5px;
@@ -6431,22 +6450,22 @@
   list-style-position: inside;
 }
 
-.translation-task-shell .translation-full-reference .translation-full-layer.is-compact {
+.translation-app .translation-full-reference .translation-full-layer.is-compact {
   padding: 2px 14px 13px;
 }
 
-.translation-task-shell .translation-full-reference .translation-full-flow {
+.translation-app .translation-full-reference .translation-full-flow {
   font-size: 15px;
   line-height: 1.7;
 }
 
-.translation-task-shell .translation-full-reference-details {
+.translation-app .translation-full-reference-details {
   margin: 0 14px 13px;
   padding-top: 8px;
   border-top: 1px solid var(--tx-line);
 }
 
-.translation-task-shell .translation-full-reference-note {
+.translation-app .translation-full-reference-note {
   display: flex;
   align-items: flex-start;
   gap: 7px;
@@ -6456,32 +6475,32 @@
   line-height: 1.55;
 }
 
-.translation-task-shell .translation-full-reference-note svg {
+.translation-app .translation-full-reference-note svg {
   width: 14px;
   height: 14px;
   margin-top: 2px;
   color: var(--tx-faint);
 }
 
-.translation-task-shell .translation-full-note-host {
+.translation-app .translation-full-note-host {
   display: grid;
   gap: 7px;
   margin-top: 10px;
 }
 
-.translation-task-shell .translation-full-note-host:empty {
+.translation-app .translation-full-note-host:empty {
   display: none;
 }
 
-.translation-task-shell .translation-full-note-host .translation-sentence-note {
+.translation-app .translation-full-note-host .translation-sentence-note {
   border-radius: 10px;
 }
 
-.translation-task-shell .translation-sentence-note.is-readonly {
+.translation-app .translation-sentence-note.is-readonly {
   background: color-mix(in srgb, var(--background-secondary) 58%, var(--background-primary));
 }
 
-.translation-task-shell .translation-sentence-note-readonly-value {
+.translation-app .translation-sentence-note-readonly-value {
   padding: 0 16px 12px 42px;
   color: var(--tx-muted);
   font-size: 13px;
@@ -6489,7 +6508,7 @@
   white-space: pre-wrap;
 }
 
-.translation-task-shell .translation-full-sidebar {
+.translation-app .translation-full-sidebar {
   position: sticky;
   top: 18px;
   align-self: start;
@@ -6498,25 +6517,25 @@
   overflow-y: auto;
 }
 
-.translation-task-shell .translation-full-document > .translation-work-footer {
+.translation-app .translation-full-document > .translation-work-footer {
   padding-right: 0;
   padding-left: 42px;
 }
 
 @container (max-width: 840px) {
-  .translation-task-shell .translation-unit-header-tools {
+  .translation-app .translation-unit-header-tools {
     gap: 9px;
   }
 
-  .translation-task-shell .translation-full-layout {
+  .translation-app .translation-full-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .translation-task-shell .translation-full-document {
+  .translation-app .translation-full-document {
     padding-right: 0;
   }
 
-  .translation-task-shell .translation-full-sidebar {
+  .translation-app .translation-full-sidebar {
     position: static;
     min-height: 0;
     max-height: none;
@@ -6527,26 +6546,26 @@
 }
 
 @container (max-width: 560px) {
-  .translation-task-shell .translation-work-layout.is-full-mode .translation-unit-workspace {
+  .translation-app .translation-work-layout.is-full-mode .translation-unit-workspace {
     width: min(100% - 28px, 1320px);
   }
 
-  .translation-task-shell .translation-unit-header-tools {
+  .translation-app .translation-unit-header-tools {
     align-items: flex-end;
     flex-direction: column-reverse;
   }
 
-  .translation-task-shell .translation-full-document-header,
-  .translation-task-shell .translation-full-block {
+  .translation-app .translation-full-document-header,
+  .translation-app .translation-full-block {
     padding-left: 0;
   }
 
-  .translation-task-shell .translation-full-block-number {
+  .translation-app .translation-full-block-number {
     position: static;
     margin-bottom: 8px;
   }
 
-  .translation-task-shell .translation-full-layer {
+  .translation-app .translation-full-layer {
     padding-right: 10px;
     padding-left: 10px;
   }
@@ -6554,19 +6573,19 @@
 
 /* Full-text master/detail workbench: the document is the source surface; the
    processor reuses the complete per-unit editing and relation workflow. */
-.translation-task-shell .translation-full-layout {
+.translation-app .translation-full-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(370px, .88fr);
   gap: 30px;
   align-items: start;
 }
 
-.translation-task-shell .translation-full-document {
+.translation-app .translation-full-document {
   min-width: 0;
   padding: 0 0 24px;
 }
 
-.translation-task-shell .translation-full-document-header {
+.translation-app .translation-full-document-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -6580,19 +6599,19 @@
   letter-spacing: 0;
 }
 
-.translation-task-shell .translation-full-document-header strong {
+.translation-app .translation-full-document-header strong {
   color: var(--tx-muted);
   font-size: 13px;
   font-weight: 680;
 }
 
-.translation-task-shell .translation-full-block {
+.translation-app .translation-full-block {
   position: relative;
   padding: 28px 8px 30px 44px;
   border-bottom: 1px solid var(--tx-line);
 }
 
-.translation-task-shell .translation-full-block-number {
+.translation-app .translation-full-block-number {
   position: absolute;
   top: 34px;
   left: 4px;
@@ -6603,19 +6622,19 @@
   letter-spacing: .05em;
 }
 
-.translation-task-shell .translation-full-document .translation-full-layer {
+.translation-app .translation-full-document .translation-full-layer {
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
 }
 
-.translation-task-shell .translation-full-document .translation-full-flow {
+.translation-app .translation-full-document .translation-full-flow {
   font-size: clamp(18px, 1.65vw, 22px);
   line-height: 1.9;
 }
 
-.translation-task-shell .translation-full-document .translation-full-unit {
+.translation-app .translation-full-document .translation-full-unit {
   position: relative;
   padding: 3px 2px 4px;
   border-radius: 5px;
@@ -6626,25 +6645,25 @@
   transition: background .15s ease, box-shadow .15s ease, color .15s ease;
 }
 
-.translation-task-shell .translation-full-document .translation-full-unit:hover {
+.translation-app .translation-full-document .translation-full-unit:hover {
   background: color-mix(in srgb, var(--tx-accent) 5%, transparent);
 }
 
-.translation-task-shell .translation-full-document .translation-full-unit.is-active {
+.translation-app .translation-full-document .translation-full-unit.is-active {
   background: color-mix(in srgb, var(--tx-accent) 8%, transparent);
   box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--tx-accent) 62%, transparent);
 }
 
-.translation-task-shell .translation-full-document .translation-full-unit:focus-visible {
+.translation-app .translation-full-document .translation-full-unit:focus-visible {
   background: color-mix(in srgb, var(--tx-accent) 8%, transparent);
   box-shadow: inset 0 -2px 0 var(--tx-accent);
 }
 
-.translation-task-shell .translation-full-document .translation-full-unit.is-active .translation-full-unit-surface {
+.translation-app .translation-full-document .translation-full-unit.is-active .translation-full-unit-surface {
   cursor: text;
 }
 
-.translation-task-shell .translation-full-processor {
+.translation-app .translation-full-processor {
   position: sticky;
   top: 18px;
   min-width: 0;
@@ -6656,7 +6675,7 @@
   box-shadow: 0 12px 34px color-mix(in srgb, #000 7%, transparent);
 }
 
-.translation-task-shell .translation-full-processor-header {
+.translation-app .translation-full-processor-header {
   position: sticky;
   top: 0;
   z-index: 3;
@@ -6670,7 +6689,7 @@
   background: color-mix(in srgb, var(--background-primary) 96%, var(--tx-accent));
 }
 
-.translation-task-shell .translation-full-processor-identity {
+.translation-app .translation-full-processor-identity {
   display: flex;
   align-items: baseline;
   gap: 9px;
@@ -6678,19 +6697,19 @@
   font-size: 11px;
 }
 
-.translation-task-shell .translation-full-processor-identity strong {
+.translation-app .translation-full-processor-identity strong {
   color: var(--tx-ink);
   font-family: var(--font-monospace);
   font-size: 13px;
 }
 
-.translation-task-shell .translation-full-processor-navigation {
+.translation-app .translation-full-processor-navigation {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.translation-task-shell .translation-full-processor-navigation .translation-icon-button {
+.translation-app .translation-full-processor-navigation .translation-icon-button {
   width: 30px;
   min-width: 30px;
   height: 30px;
@@ -6699,18 +6718,18 @@
   background: transparent;
 }
 
-.translation-task-shell .translation-full-processor-navigation .translation-icon-button:hover:not(:disabled) {
+.translation-app .translation-full-processor-navigation .translation-icon-button:hover:not(:disabled) {
   border-color: var(--tx-control-border);
   background: var(--tx-control-hover);
 }
 
-.translation-task-shell .translation-full-processor-body {
+.translation-app .translation-full-processor-body {
   display: grid;
   gap: 10px;
   padding: 18px;
 }
 
-.translation-task-shell .translation-full-processor-body > .translation-editor-card {
+.translation-app .translation-full-processor-body > .translation-editor-card {
   min-height: 250px;
   border-color: color-mix(in srgb, var(--text-normal) 12%, transparent);
   border-radius: 12px;
@@ -6718,24 +6737,24 @@
   box-shadow: none;
 }
 
-.translation-task-shell .translation-full-processor-body > .translation-editor-card:focus-within {
+.translation-app .translation-full-processor-body > .translation-editor-card:focus-within {
   border-color: color-mix(in srgb, var(--tx-accent) 54%, var(--tx-line));
   box-shadow: inset 3px 0 0 color-mix(in srgb, var(--tx-accent) 68%, transparent);
 }
 
-.translation-task-shell .translation-full-processor-body .translation-unified-editor,
-.translation-task-shell .translation-full-processor-body .translation-unit-editor {
+.translation-app .translation-full-processor-body .translation-unified-editor,
+.translation-app .translation-full-processor-body .translation-unit-editor {
   min-height: 190px;
   font-size: clamp(17px, 1.45vw, 21px);
   line-height: 1.75;
 }
 
-.translation-task-shell .translation-full-processor-body .translation-sentence-note {
+.translation-app .translation-full-processor-body .translation-sentence-note {
   margin-top: 0;
   border-radius: 10px;
 }
 
-.translation-task-shell .translation-full-processor-context {
+.translation-app .translation-full-processor-context {
   min-width: 0;
   min-height: 150px;
   padding: 18px;
@@ -6744,55 +6763,55 @@
   background: color-mix(in srgb, var(--background-secondary) 58%, var(--background-primary));
 }
 
-.translation-task-shell .translation-full-processor-context .translation-context-placeholder {
+.translation-app .translation-full-processor-context .translation-context-placeholder {
   min-height: 84px;
   padding-bottom: 0;
 }
 
-.translation-task-shell .translation-full-processor .translation-full-reference {
+.translation-app .translation-full-processor .translation-full-reference {
   margin-top: 2px;
 }
 
-.translation-task-shell .translation-full-footer-host {
+.translation-app .translation-full-footer-host {
   grid-column: 1 / -1;
   min-width: 0;
 }
 
-.translation-task-shell .translation-full-footer-host .translation-work-footer {
+.translation-app .translation-full-footer-host .translation-work-footer {
   padding-right: 0;
   padding-left: 0;
 }
 
 @container (max-width: 940px) {
-  .translation-task-shell .translation-full-layout {
+  .translation-app .translation-full-layout {
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
   }
 
-  .translation-task-shell .translation-full-processor {
+  .translation-app .translation-full-processor {
     position: static;
     max-height: none;
   }
 }
 
 @container (max-width: 560px) {
-  .translation-task-shell .translation-full-document-header {
+  .translation-app .translation-full-document-header {
     align-items: flex-start;
     flex-direction: column;
     gap: 3px;
   }
 
-  .translation-task-shell .translation-full-block {
+  .translation-app .translation-full-block {
     padding: 22px 0 24px;
   }
 
-  .translation-task-shell .translation-full-block-number {
+  .translation-app .translation-full-block-number {
     position: static;
     margin-bottom: 8px;
   }
 
-  .translation-task-shell .translation-full-processor-body,
-  .translation-task-shell .translation-full-processor-context {
+  .translation-app .translation-full-processor-body,
+  .translation-app .translation-full-processor-context {
     padding: 14px;
   }
 }
@@ -7241,8 +7260,8 @@
 
 /* Final flat editor pass: only transient overlays and the primary completion
    action receive elevation; the inspector remains a document surface. */
-.translation-task-shell .translation-full-processor,
-.translation-task-shell .translation-completed-detail {
+.translation-app .translation-full-processor,
+.translation-app .translation-completed-detail {
   border: 0;
   border-left: 1px solid var(--tx-line);
   border-radius: 0;
@@ -7250,45 +7269,45 @@
   box-shadow: none;
 }
 
-.translation-task-shell .translation-full-processor-header,
-.translation-task-shell .translation-completed-detail-header {
+.translation-app .translation-full-processor-header,
+.translation-app .translation-completed-detail-header {
   background: var(--background-primary);
 }
 
-.translation-task-shell .translation-full-processor-navigation .translation-icon-button,
-.translation-task-shell .translation-completed-detail-navigation .translation-icon-button {
+.translation-app .translation-full-processor-navigation .translation-icon-button,
+.translation-app .translation-completed-detail-navigation .translation-icon-button {
   border: 0;
   border-radius: 6px;
   background: transparent;
   box-shadow: none;
 }
 
-.translation-task-shell .translation-full-processor-navigation .translation-icon-button:hover:not(:disabled),
-.translation-task-shell .translation-completed-detail-navigation .translation-icon-button:hover:not(:disabled) {
+.translation-app .translation-full-processor-navigation .translation-icon-button:hover:not(:disabled),
+.translation-app .translation-completed-detail-navigation .translation-icon-button:hover:not(:disabled) {
   border: 0;
   background: var(--tx-control-hover);
   box-shadow: none;
 }
 
-.translation-task-shell .translation-full-processor-body > .translation-editor-card,
-.translation-task-shell .translation-full-processor-body > .translation-unified-card {
+.translation-app .translation-full-processor-body > .translation-editor-card,
+.translation-app .translation-full-processor-body > .translation-unified-card {
   border-radius: 7px;
   box-shadow: none;
 }
 
-.translation-task-shell .translation-full-processor-body > .translation-editor-card:focus-within,
-.translation-task-shell .translation-full-processor-body > .translation-unified-card:focus-within {
+.translation-app .translation-full-processor-body > .translation-editor-card:focus-within,
+.translation-app .translation-full-processor-body > .translation-unified-card:focus-within {
   box-shadow: inset 3px 0 0 color-mix(in srgb, var(--tx-accent) 68%, transparent);
 }
 
-.translation-task-shell .translation-full-processor-context {
+.translation-app .translation-full-processor-context {
   padding: 0 20px 22px;
   border-top: 1px solid var(--tx-line);
   background: var(--background-primary);
 }
 
-.translation-task-shell .translation-full-processor .translation-full-reference,
-.translation-task-shell .translation-completed-initial-reference {
+.translation-app .translation-full-processor .translation-full-reference,
+.translation-app .translation-completed-initial-reference {
   margin-right: 0;
   margin-left: 0;
   border-right: 0;
@@ -7297,9 +7316,9 @@
   background: transparent;
 }
 
-.translation-task-shell .translation-workbench-view-switch,
-.translation-task-shell .translation-completed-projections,
-.translation-task-shell .translation-completed-detail-tabs {
+.translation-app .translation-workbench-view-switch,
+.translation-app .translation-completed-projections,
+.translation-app .translation-completed-detail-tabs {
   padding: 0;
   border: 0;
   border-bottom: 1px solid var(--tx-line);
@@ -7307,9 +7326,9 @@
   background: transparent;
 }
 
-.translation-task-shell .translation-workbench-view-switch button,
-.translation-task-shell .translation-completed-projections button,
-.translation-task-shell .translation-completed-detail-tabs button {
+.translation-app .translation-workbench-view-switch button,
+.translation-app .translation-completed-projections button,
+.translation-app .translation-completed-detail-tabs button {
   position: relative;
   height: 36px;
   border-radius: 0;
@@ -7317,17 +7336,17 @@
   box-shadow: none;
 }
 
-.translation-task-shell .translation-workbench-view-switch button.is-active,
-.translation-task-shell .translation-completed-projections button.is-active,
-.translation-task-shell .translation-completed-detail-tabs button.is-active {
+.translation-app .translation-workbench-view-switch button.is-active,
+.translation-app .translation-completed-projections button.is-active,
+.translation-app .translation-completed-detail-tabs button.is-active {
   color: var(--tx-ink);
   background: transparent;
   box-shadow: none;
 }
 
-.translation-task-shell .translation-workbench-view-switch button.is-active::after,
-.translation-task-shell .translation-completed-projections button.is-active::after,
-.translation-task-shell .translation-completed-detail-tabs button.is-active::after {
+.translation-app .translation-workbench-view-switch button.is-active::after,
+.translation-app .translation-completed-projections button.is-active::after,
+.translation-app .translation-completed-detail-tabs button.is-active::after {
   position: absolute;
   right: 10px;
   bottom: -1px;
@@ -7337,21 +7356,21 @@
   content: "";
 }
 
-.translation-task-shell .translation-completed-detail-tabs {
+.translation-app .translation-completed-detail-tabs {
   margin: 0;
   padding: 0 16px;
 }
 
-.translation-task-shell .translation-completed-detail-tabs button {
+.translation-app .translation-completed-detail-tabs button {
   min-width: 88px;
 }
 
-.translation-task-shell .translation-completed-relation-row {
+.translation-app .translation-completed-relation-row {
   border-radius: 5px;
 }
 
-.translation-task-shell .translation-context-sidebar .translation-relation-inspector,
-.translation-task-shell .translation-context-sidebar .translation-relation-composer.is-drafting {
+.translation-app .translation-context-sidebar .translation-relation-inspector,
+.translation-app .translation-context-sidebar .translation-relation-composer.is-drafting {
   margin-top: 0;
   padding: 0 0 18px;
   border: 0;
@@ -7361,14 +7380,710 @@
   box-shadow: none;
 }
 
-.translation-task-shell .translation-context-sidebar .translation-relation-tag {
+.translation-app .translation-context-sidebar .translation-relation-tag {
   min-height: 24px;
   border-radius: 5px;
 }
 
-.translation-task-shell .translation-context-sidebar .translation-tag-add-button {
+.translation-app .translation-context-sidebar .translation-tag-add-button {
   border: 0;
   border-radius: 5px;
   background: transparent;
   box-shadow: none;
+}
+
+/* Viewport-fit pass for the full-text processor: the inspector holds one
+   screen of tools. Editors are capped and scroll internally, sections are
+   separated by whitespace and small labels instead of rules, and the
+   workbench shares one type scale (canvas 18–20 / editor 16 / aid 13.5 /
+   label 11.5). */
+.translation-app .translation-full-processor {
+  max-height: calc(100vh - 210px);
+}
+
+.translation-app .translation-full-document .translation-full-flow {
+  font-size: clamp(18px, 1.5vw, 20px);
+}
+
+.translation-app .translation-full-processor-body {
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.translation-app .translation-full-processor-body > .translation-editor-card {
+  min-height: 0;
+  padding: 14px 16px 15px;
+}
+
+.translation-app .translation-full-processor-body .translation-unified-editor,
+.translation-app .translation-full-processor-body .translation-unit-editor {
+  min-height: 96px;
+  max-height: 216px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.translation-app .translation-full-processor .translation-full-reference > summary {
+  font-size: var(--tx-fs-label);
+}
+
+.translation-app .translation-full-processor-context {
+  padding: 6px 20px 18px;
+  min-height: 0;
+}
+
+.translation-app .translation-full-processor-context .translation-relation-inspector,
+.translation-app .translation-full-processor-context .translation-relation-composer.is-drafting {
+  padding-bottom: 14px;
+  border-bottom: 0;
+}
+
+.translation-app .translation-full-processor-context .translation-context-placeholder {
+  min-height: 0;
+  padding-bottom: 14px;
+  border-bottom: 0;
+}
+
+.translation-app .translation-context-placeholder-value {
+  color: var(--tx-muted);
+  font-size: 12.5px;
+}
+
+.translation-app .translation-full-processor .translation-comparison-note {
+  padding-top: 12px;
+  border-top: 0;
+}
+
+.translation-app .translation-comparison-note-editor {
+  min-height: 92px;
+  max-height: 180px;
+  font-size: 13.5px;
+}
+
+.translation-app .translation-full-processor-body .translation-sentence-note-editor {
+  max-height: 140px;
+}
+
+/* Visual-grammar unification pass.
+   One inspector grammar across unit mode, full-text mode, and the completed
+   archive; a second semantic hue for relations (warm amber family) so the
+   accent purple is reserved for the current unit container and primary
+   actions; flat list rows instead of raised pills; and all content text is
+   selectable for copying. */
+.translation-app {
+  --tx-relation-hue: 34;
+  --tx-relation: hsl(var(--tx-relation-hue) 62% 42%);
+  --tx-relation-soft: hsl(var(--tx-relation-hue) 62% 48% / .12);
+}
+
+.theme-dark .translation-app {
+  --tx-relation: hsl(var(--tx-relation-hue) 58% 60%);
+  --tx-relation-soft: hsl(var(--tx-relation-hue) 58% 58% / .16);
+}
+
+/* Relation fragments: warm hue family, rotated per relation index so
+   neighbouring relations stay distinguishable without touching purple. */
+.translation-selectable-text .is-related,
+.translation-context-text .is-related,
+.translation-unified-editor .is-related,
+.translation-app .translation-full-unit-surface .is-related,
+.translation-completed-unit-text .is-related,
+.translation-completed-text .is-related,
+.translation-completed-reference-text .is-related {
+  border-bottom: 2px solid hsl(calc(34 + var(--relation-index) * 24) 58% 44%);
+  background: hsl(calc(34 + var(--relation-index) * 24) 62% 48% / .09);
+}
+
+.theme-dark .translation-selectable-text .is-related,
+.theme-dark .translation-context-text .is-related,
+.theme-dark .translation-unified-editor .is-related,
+.theme-dark .translation-app .translation-full-unit-surface .is-related,
+.theme-dark .translation-completed-unit-text .is-related,
+.theme-dark .translation-completed-text .is-related,
+.theme-dark .translation-completed-reference-text .is-related {
+  border-bottom-color: hsl(calc(34 + var(--relation-index) * 24) 54% 62%);
+  background: hsl(calc(34 + var(--relation-index) * 24) 54% 60% / .13);
+}
+
+.translation-selectable-text .is-draft-range,
+.translation-unified-editor .is-draft-range,
+.translation-app .translation-full-unit-surface .is-draft-range {
+  background: var(--tx-relation-soft);
+  box-shadow: inset 0 -3px 0 var(--tx-relation);
+}
+
+.translation-unit-workspace.has-active-relation [data-relation-id].is-active-relation {
+  border-bottom-color: var(--tx-relation);
+  background: var(--tx-relation-soft);
+  box-shadow: 0 0 0 2px hsl(var(--tx-relation-hue) 62% 48% / .10);
+}
+
+.translation-completed-unit-text .is-active-relation,
+.translation-completed-text .is-active-relation,
+.translation-completed-reference-text .is-active-relation {
+  background: var(--tx-relation-soft);
+  box-shadow: inset 0 -2px 0 var(--tx-relation);
+}
+
+.translation-app .translation-forward-reference.is-main .translation-reference-text [data-reference-number].is-reference-active {
+  border-bottom-color: var(--tx-relation);
+  background: var(--tx-relation-soft);
+}
+
+/* Flat list rows: relation entries, reference entries, and tag picker rows
+   are text lines with a hover wash, not raised pills. */
+.translation-app .translation-reference-relation,
+.translation-app .translation-completed-relation-row,
+.translation-app .translation-tag-picker-row,
+.translation-app .translation-tag-add-button,
+.translation-app .translation-relation-draft-fragment {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.translation-app .translation-reference-relation:hover,
+.translation-app .translation-completed-relation-row:hover,
+.translation-app .translation-tag-picker-row:hover,
+.translation-app .translation-tag-add-button:hover,
+.translation-app .translation-relation-draft-fragment:hover {
+  background: var(--tx-control-hover);
+  box-shadow: none;
+}
+
+.translation-app .translation-completed-relation-row {
+  padding: 5px 8px;
+}
+
+.translation-app .translation-completed-relation-row.is-active {
+  background: var(--tx-accent-soft);
+  box-shadow: inset 2px 0 0 var(--tx-accent);
+}
+
+.translation-app .translation-completed-relation-number {
+  color: var(--tx-relation);
+  font-family: var(--font-monospace);
+  font-size: 11px;
+}
+
+.translation-app .translation-relation-tag {
+  border: 0;
+  background: var(--tx-control-hover);
+  box-shadow: none;
+}
+
+.translation-app .translation-tag-picker {
+  border: 1px solid var(--tx-line);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px color-mix(in srgb, #000 10%, transparent);
+}
+
+/* All content text is selectable and copyable; only structural separators
+   and icon glyphs stay unselectable. */
+.translation-app .translation-reference-relation,
+.translation-app .translation-completed-relation-row,
+.translation-app .translation-tag-picker-row,
+.translation-app .translation-relation-tag,
+.translation-app .translation-relation-inspector-summary,
+.translation-app .translation-reference-relation-summary,
+.translation-app .translation-reference-note,
+.translation-app .translation-relation-comment-value,
+.translation-app .translation-completed-note-row,
+.translation-app .translation-full-reference-note,
+.translation-app .translation-readonly-notes,
+.translation-app .translation-sentence-note-preview,
+.translation-app .translation-sentence-note-readonly-value,
+.translation-app .translation-context-placeholder-value {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+
+.translation-app .translation-reference-relation,
+.translation-app .translation-completed-relation-row,
+.translation-app .translation-tag-picker-row {
+  cursor: pointer;
+}
+
+/* Inspector grammar shared by unit mode and full-text mode: same background,
+   same section rhythm, no competing panel fills. */
+.translation-context-sidebar,
+.translation-app .translation-context-sidebar,
+.translation-app .translation-full-processor-context {
+  background: var(--background-primary);
+}
+
+/* The full-text processor lost its "current unit" pager header; the canvas
+   accent already communicates the current unit and the footer navigates. */
+.translation-app .translation-full-processor-header {
+  display: none;
+}
+
+.translation-app .translation-full-processor-body {
+  padding-top: 20px;
+}
+
+/* Completed archive inspector aligns with the workbench inspector: flat
+   header, flat tabs (styled by the shared flat-tab rules), no floating card. */
+.translation-app .translation-completed-detail-header {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.translation-app .translation-completed-detail-identity {
+  color: var(--tx-faint);
+  font-size: var(--tx-fs-label);
+}
+
+.translation-app .translation-completed-section-heading strong {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--tx-muted);
+  letter-spacing: .08em;
+}
+
+/* Breathing pass: one label voice and one vertical rhythm for the inspector
+   column, in every mode. Sections are separated by whitespace, not hairlines. */
+.translation-app .translation-notes-title,
+.translation-app .translation-field-label,
+.translation-app .translation-card-label,
+.translation-app .translation-reference-kicker,
+.translation-app .translation-full-reference > summary {
+  color: var(--tx-muted);
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: .08em;
+}
+
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker {
+  margin-bottom: 10px;
+}
+
+.translation-app .translation-full-processor-body {
+  gap: 18px;
+  padding: 22px 22px 8px;
+}
+
+.translation-app .translation-full-processor .translation-full-reference {
+  margin-top: 0;
+  border: 0;
+  background: transparent;
+}
+
+.translation-app .translation-full-processor .translation-full-reference > summary {
+  padding: 0;
+}
+
+.translation-app .translation-full-processor .translation-full-reference .translation-full-layer.is-compact {
+  padding: 10px 0 0;
+}
+
+.translation-app .translation-full-processor-context {
+  border-top: 0;
+  padding: 24px 22px 24px;
+}
+
+.translation-app .translation-full-processor-context .translation-relation-inspector,
+.translation-app .translation-full-processor-context .translation-relation-composer.is-drafting,
+.translation-app .translation-full-processor-context .translation-context-placeholder {
+  padding-bottom: 24px;
+}
+
+.translation-app .translation-full-processor .translation-comparison-note {
+  padding-top: 0;
+}
+
+/* Viewport-fit height model: the exercise page is exactly one screen tall.
+   Header and footer are pinned; only the middle work area scrolls, using the
+   plugin's own scrollbars instead of Obsidian's outer view scrollbar. */
+.view-content.translation-app {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-content.translation-app {
+  padding: 0;
+}
+
+.translation-app .translation-task-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.translation-app .translation-work-layout {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.translation-app .translation-unit-nav {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.translation-app .translation-unit-workspace {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding-top: 24px;
+}
+
+.translation-app .translation-unit-header {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+}
+
+/* The layout body between header and footer is the single scroll region. */
+.translation-app .translation-unit-workspace > .translation-unified-layout,
+.translation-app .translation-unit-workspace > .translation-full-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Full mode: document and inspector scroll independently inside the body. */
+.translation-app .translation-work-layout.is-full-mode .translation-full-layout {
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.translation-app .translation-full-layout > .translation-full-document,
+.translation-app .translation-full-layout > .translation-full-processor {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Unit mode: the paired canvas / inspector scrolls as one body. */
+.translation-app .translation-unit-workspace > .translation-unified-layout {
+  overflow-y: auto;
+}
+
+/* Footer pinned to the bottom of the workspace, always on screen. */
+.translation-app .translation-unit-workspace > .translation-work-footer {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--tx-line);
+  background: color-mix(in srgb, var(--background-primary) 92%, transparent);
+}
+
+/* Tighter inspector rhythm: sections sit closer together. */
+.translation-app .translation-full-processor-body {
+  gap: 14px;
+  padding: 18px 20px 6px;
+}
+
+.translation-app .translation-full-processor-context {
+  padding: 16px 20px 18px;
+}
+
+.translation-app .translation-full-processor-context .translation-relation-inspector,
+.translation-app .translation-full-processor-context .translation-relation-composer.is-drafting,
+.translation-app .translation-full-processor-context .translation-context-placeholder {
+  padding-bottom: 16px;
+}
+
+.translation-app .translation-relation-inspector-summary {
+  margin-bottom: 10px;
+}
+
+.translation-app .translation-relation-comment-editor,
+.translation-app .translation-comparison-note-editor {
+  min-height: 64px;
+}
+
+.translation-app .translation-comparison-note {
+  padding-top: 4px;
+}
+
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker {
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   Unified type scale. One rooted scale (follows Obsidian's
+   --font-text-size); nothing content-bearing renders below the
+   body tier. Labels/meta share the small tier but never go
+   micro. This block is the single source of truth for sizing
+   and overrides the historical scattered px values. */
+
+/* CANVAS — the article itself: source, translation, full-text flow.
+   The largest, most important reading/editing surfaces. */
+.translation-app .translation-selectable-text,
+.translation-app .translation-context-text,
+.translation-app .translation-reference-text,
+.translation-app .translation-unified-editor,
+.translation-app .translation-unit-editor,
+.translation-app .translation-editor,
+.translation-app .translation-editor textarea,
+.translation-app .translation-full-unit-surface,
+.translation-app .translation-completed-unit-text,
+.translation-app .translation-completed-text,
+.translation-app .translation-completed-reference-text {
+  font-size: var(--tx-fs-canvas);
+  line-height: 1.65;
+}
+
+.translation-app .translation-full-flow,
+.translation-app .translation-full-document .translation-full-flow {
+  font-size: var(--tx-fs-canvas);
+  line-height: 1.8;
+}
+
+/* CONTENT — relation fragments, descriptions, tags, comments,
+   references: the main study material in the inspector. */
+.translation-app .translation-context-placeholder-value,
+.translation-app .translation-reference-relation-summary,
+.translation-app .translation-relation-inspector-summary,
+.translation-app .translation-relation-comment-value,
+.translation-app .translation-relation-comment-editor,
+.translation-app .translation-relation-tag,
+.translation-app .translation-tag-picker-row,
+.translation-app .translation-tag-add-button,
+.translation-app .translation-relation-draft-fragment,
+.translation-app .translation-relation-draft-side,
+.translation-app .translation-relation-draft-empty,
+.translation-app .translation-relation-instruction,
+.translation-app .translation-relation-instruction strong,
+.translation-app .translation-completed-relation-row,
+.translation-app .translation-reference-relation {
+  font-size: var(--tx-fs-body);
+  line-height: 1.55;
+}
+
+/* NOTE — every annotation / note body (sentence notes, initial-
+   translation notes, back-translation notes, comparison notes). */
+.translation-app .translation-sentence-note-editor,
+.translation-app .translation-sentence-note-readonly-value,
+.translation-app .translation-comparison-note-editor,
+.translation-app .translation-readonly-notes,
+.translation-app .translation-readonly-notes > div,
+.translation-app .translation-reference-note,
+.translation-app .translation-full-reference-note,
+.translation-app .translation-completed-note-row,
+.translation-app .translation-completed-note-row strong,
+.translation-app .translation-completed-note-row div,
+.translation-app .translation-completed-reference-note {
+  font-size: var(--tx-fs-note);
+  line-height: 1.6;
+}
+
+/* Secondary — nav previews and small index badges only. */
+.translation-app .translation-unit-preview,
+.translation-app .translation-reference-relation-index,
+.translation-app .translation-completed-relation-index {
+  font-size: var(--tx-fs-secondary);
+  line-height: 1.5;
+}
+
+/* Section labels / kickers / tabs — small tier, floored. */
+.translation-app .translation-card-label,
+.translation-app .translation-field-label,
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker,
+.translation-app .translation-sentence-note-label,
+.translation-app .translation-unit-nav-heading,
+.translation-app .translation-full-reference > summary,
+.translation-app .translation-relation-inspector-title,
+.translation-app .translation-completed-section-label {
+  font-size: var(--tx-fs-label);
+  letter-spacing: .04em;
+}
+
+/* Meta — stage stage rail, doc header counts, autosave hint. */
+.translation-app .translation-task-stage,
+.translation-app .translation-stage-step,
+.translation-app .translation-unified-hint,
+.translation-app .translation-full-document-header,
+.translation-app .translation-full-document-header strong,
+.translation-app .translation-unit-number,
+.translation-app .translation-work-footer-progress {
+  font-size: var(--tx-fs-meta);
+}
+
+/* Static (non-folding) annotation blocks. */
+.translation-app .translation-sentence-note.is-static {
+  display: block;
+}
+
+.translation-app .translation-sentence-note-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--tx-muted);
+}
+
+.translation-app .translation-sentence-note-heading .translation-sentence-note-icon {
+  display: inline-flex;
+  color: var(--tx-accent);
+}
+
+.translation-app .translation-sentence-note.is-static .translation-sentence-note-editor-wrap {
+  display: block;
+}
+
+.translation-app .translation-sentence-note-readonly-value {
+  padding: 0;
+  color: var(--tx-ink);
+  white-space: pre-wrap;
+}
+
+/* Type-scale completion: completed-archive labels/meta and mode
+   tabs join the same rooted scale so nothing renders micro. */
+.translation-app .translation-eyebrow,
+.translation-app .translation-completed-section-label,
+.translation-app .translation-completed-section-heading strong,
+.translation-app .translation-completed-section-heading span {
+  font-size: var(--tx-fs-label);
+  letter-spacing: .04em;
+}
+
+.translation-app .translation-article-page-meta,
+.translation-app .translation-completed-toolbar-hint,
+.translation-app .translation-completed-paragraph-number,
+.translation-app .translation-full-block-number {
+  font-size: var(--tx-fs-meta);
+}
+
+.translation-app .translation-completed-empty {
+  font-size: var(--tx-fs-secondary);
+}
+
+.translation-app .translation-workbench-view-switch button,
+.translation-app .translation-completed-detail-tabs button,
+.translation-app .translation-completed-projections button,
+.translation-app .translation-full-reference > summary {
+  font-size: var(--tx-fs-secondary);
+}
+
+.translation-app .translation-completed-document-heading,
+.translation-app .translation-completed-document-heading strong,
+.translation-app .translation-completed-document-heading span {
+  font-size: var(--tx-fs-meta);
+}
+
+/* Font-size settings tab: current value readout next to each slider. */
+.pattern-font-size-value {
+  min-width: 44px;
+  margin-left: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Inspector empty state — a tasteful centered figure instead of an
+   ugly white void when the back-translation / relation rail has no
+   active content. Shares the column frame; fills its height. */
+.translation-app .translation-context-sidebar:has(> .translation-context-placeholder.is-empty) {
+  display: flex;
+  flex-direction: column;
+}
+
+.translation-app .translation-context-placeholder.is-empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.translation-app .translation-context-placeholder.is-empty .translation-context-empty-figure {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  padding: 26px 20px;
+  border: 1px dashed var(--tx-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--tx-accent) 3%, transparent);
+  color: var(--tx-faint);
+  text-align: center;
+}
+
+.translation-app .translation-context-empty-icon {
+  display: inline-flex;
+  color: color-mix(in srgb, var(--tx-accent) 45%, var(--tx-faint));
+}
+
+.translation-app .translation-context-empty-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.translation-app .translation-context-placeholder.is-empty .translation-context-placeholder-value {
+  max-width: 22ch;
+  font-size: var(--tx-fs-meta);
+  line-height: 1.5;
+  color: var(--tx-faint);
+}
+
+/* Note / comment editors: border-box so persisted drag-height is exact. */
+.translation-app .translation-sentence-note-editor,
+.translation-app .translation-comparison-note-editor,
+.translation-app .translation-relation-comment textarea {
+  box-sizing: border-box;
+}
+
+/* Unit mode (初译 & 回译) — the 批注/笔记 box is the flexible main body:
+   it fills the height left by the fixed source/material and editor
+   cards, so short content / zoom-out never leaves a void above the
+   pinned footer, and it stays that way across sentences and stages. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+}
+
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-text-card,
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-editor-card {
+  flex: 0 0 auto;
+}
+
+/* 译文 / 回译 input: fixed, compact, internal scroll, no resize handle. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  overflow-y: auto;
+  resize: none;
+}
+
+/* 句子批注 / 回译笔记: flex-fills the remaining height to the footer. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+}
+
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note > .translation-sentence-note-editor-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note .translation-sentence-note-editor {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  resize: none;
 }

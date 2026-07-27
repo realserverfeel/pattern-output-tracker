@@ -61,6 +61,8 @@ export interface TranslationStudyHost {
   saveTranslationTag(path: string, obsidianTags: string[]): Promise<TranslationTagOption>;
   getTranslationWorkbenchMode(stage: TranslationWorkbenchStage): TranslationWorkbenchMode;
   setTranslationWorkbenchMode(stage: TranslationWorkbenchStage, mode: TranslationWorkbenchMode): Promise<void>;
+  getNoteEditorHeight(): number | null;
+  setNoteEditorHeight(height: number): Promise<void>;
 }
 
 export interface TranslationTagOption {
@@ -909,14 +911,11 @@ export class TranslationStudyView extends ItemView {
     this.renderWorkbenchModeSwitch(headerTools, stage, mode);
     headerTools.createDiv({ cls: "translation-unified-hint", text: "自动保存" });
 
-    const workSurface = mode === "full"
-      ? this.renderFullTextWorkspace(workspace, exercise, active, stage)
-      : stage === "translate"
-        ? this.renderTranslationWorkspace(workspace, exercise, active)
-        : stage === "backTranslate"
-          ? this.renderBackTranslationWorkspace(workspace, exercise, active)
-          : this.renderComparisonWorkspace(workspace, exercise, active);
-    this.renderWorkbenchFooter(workSurface, exercise, units, activeIndex, stage);
+    if (mode === "full") this.renderFullTextWorkspace(workspace, exercise, active, stage);
+    else if (stage === "translate") this.renderTranslationWorkspace(workspace, exercise, active);
+    else if (stage === "backTranslate") this.renderBackTranslationWorkspace(workspace, exercise, active);
+    else this.renderComparisonWorkspace(workspace, exercise, active);
+    this.renderWorkbenchFooter(workspace, exercise, units, activeIndex, stage);
   }
 
   private renderWorkbenchModeSwitch(
@@ -1008,8 +1007,7 @@ export class TranslationStudyView extends ItemView {
 
     const processor = layout.createDiv({ cls: "translation-full-processor" });
     this.renderFullTextProcessor(processor, workspace, exercise, active, stage);
-    const footerHost = layout.createDiv({ cls: "translation-full-footer-host" });
-    return footerHost;
+    return layout;
   }
 
   private renderFullTextProcessor(
@@ -1019,26 +1017,6 @@ export class TranslationStudyView extends ItemView {
     unit: TranslationUnit,
     stage: TranslationWorkbenchStage,
   ): void {
-    const units = getTranslationUnits(exercise);
-    const index = units.indexOf(unit);
-    const header = processor.createDiv({ cls: "translation-full-processor-header" });
-    const identity = header.createDiv({ cls: "translation-full-processor-identity" });
-    identity.createSpan({ text: "当前单位" });
-    identity.createEl("strong", { text: `S${index + 1}` });
-    const navigation = header.createDiv({ cls: "translation-full-processor-navigation" });
-    const previous = iconButton(navigation, "chevron-left", "上一项");
-    previous.disabled = index <= 0;
-    previous.addEventListener("click", () => {
-      const target = units[index - 1];
-      if (target) this.activateFullTextUnit(workspace, exercise, target, stage);
-    });
-    const next = iconButton(navigation, "chevron-right", "下一项");
-    next.disabled = index < 0 || index >= units.length - 1;
-    next.addEventListener("click", () => {
-      const target = units[index + 1];
-      if (target) this.activateFullTextUnit(workspace, exercise, target, stage);
-    });
-
     const body = processor.createDiv({ cls: "translation-full-processor-body translation-unified-pair" });
     if (stage === "translate") {
       this.renderUnifiedEditableCard(body, workspace, exercise, unit, "译文", "translation", unit.translationRelations, "translation");
@@ -1114,7 +1092,7 @@ export class TranslationStudyView extends ItemView {
         surface.setAttr("aria-label", `${options.label || "文本"} S${getTranslationUnits(exercise).indexOf(unit) + 1}`);
         surface.spellcheck = true;
       }
-      const draft = this.relationDraft?.layer === options.relations
+      const draft = unit.id === exercise.activeUnitId && this.relationDraft?.layer === options.relations
         ? (options.side === "left" ? this.relationDraft.left : this.relationDraft.right)
         : [];
       const activeRelationId = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === options.relations
@@ -1246,7 +1224,10 @@ export class TranslationStudyView extends ItemView {
         text: this.describeRelation(unit, relation, "translation"),
       });
       if (relation.note) row.createSpan({ cls: "translation-reference-note", text: relation.note });
-      row.addEventListener("click", () => activate(relation.id));
+      row.addEventListener("click", () => {
+        if (this.hasTextSelection()) return;
+        activate(relation.id);
+      });
     });
 
     units.forEach((unit) => {
@@ -1259,6 +1240,7 @@ export class TranslationStudyView extends ItemView {
     });
 
     referenceLayer.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-relation-id]") : null;
       if (target?.dataset.relationId) activate(target.dataset.relationId);
     });
@@ -1362,12 +1344,10 @@ export class TranslationStudyView extends ItemView {
   private renderReadOnlySentenceNote(parent: HTMLElement, notes: readonly TranslationNote[], label: string): void {
     const note = notes[0];
     if (!note) return;
-    const section = parent.createEl("details", { cls: "translation-sentence-note is-readonly" });
-    const summary = section.createEl("summary", { cls: "translation-sentence-note-summary" });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
-    summary.createSpan({ cls: "translation-sentence-note-label", text: label });
-    summary.createSpan({ cls: "translation-sentence-note-preview", text: note.text });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-chevron" }), "chevron-down");
+    const section = parent.createDiv({ cls: "translation-sentence-note is-readonly is-static" });
+    const heading = section.createDiv({ cls: "translation-sentence-note-heading" });
+    setIcon(heading.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
+    heading.createSpan({ cls: "translation-sentence-note-label", text: label });
     section.createDiv({ cls: "translation-sentence-note-readonly-value", text: note.text });
   }
 
@@ -1446,6 +1426,7 @@ export class TranslationStudyView extends ItemView {
         }
       };
       referenceText.addEventListener("click", (event) => {
+        if (this.hasTextSelection()) return;
         const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-relation-id]") : null;
         if (target?.dataset.relationId) activateReference(target.dataset.relationId);
       });
@@ -1457,6 +1438,7 @@ export class TranslationStudyView extends ItemView {
         activateReference(target.dataset.relationId);
       });
       relationList.addEventListener("click", (event) => {
+        if (this.hasTextSelection()) return;
         const target = event.target instanceof Element
           ? event.target.closest<HTMLElement>("[data-reference-relation-id]")
           : null;
@@ -1472,12 +1454,28 @@ export class TranslationStudyView extends ItemView {
     return main;
   }
 
+  private renderInspectorEmptyState(
+    sidebar: HTMLElement,
+    kicker: string,
+    hint: string,
+    icon: string,
+  ): void {
+    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder is-empty" });
+    placeholder.createDiv({ cls: "translation-reference-kicker", text: kicker });
+    const figure = placeholder.createDiv({ cls: "translation-context-empty-figure" });
+    setIcon(figure.createSpan({ cls: "translation-context-empty-icon" }), icon);
+    figure.createDiv({ text: hint, cls: "translation-context-placeholder-value" });
+  }
+
   private renderBackTranslationAnnotationPlaceholder(sidebar: HTMLElement, unit: TranslationUnit): void {
     const hasActive = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === "translation";
     if (hasActive) return;
-    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder" });
-    placeholder.createDiv({ cls: "translation-reference-kicker", text: "初译批注" });
-    placeholder.createDiv({ text: "选择初译材料中的标记查看", cls: "translation-context-placeholder-value" });
+    this.renderInspectorEmptyState(
+      sidebar,
+      "初译批注",
+      "选择初译材料中的标记查看",
+      "message-square-text",
+    );
   }
 
   private renderContextPlaceholder(
@@ -1488,9 +1486,12 @@ export class TranslationStudyView extends ItemView {
     const hasDraft = this.relationDraft?.layer === layer;
     const hasActive = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === layer;
     if (hasDraft || hasActive) return;
-    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder" });
-    placeholder.createDiv({ cls: "translation-reference-kicker", text: "关联" });
-    placeholder.createDiv({ text: "未选择", cls: "translation-context-placeholder-value" });
+    this.renderInspectorEmptyState(
+      sidebar,
+      "关联",
+      layer === "comparison" ? "拖选原文与回译片段建立关联" : "拖选原文与译文片段建立关联",
+      "link",
+    );
   }
 
   private renderUnifiedReadOnlyCard(
@@ -1703,6 +1704,10 @@ export class TranslationStudyView extends ItemView {
   private removeSelectionPopover(): void {
     this.selectionPopover?.remove();
     this.selectionPopover = null;
+  }
+
+  private hasTextSelection(): boolean {
+    return Boolean(window.getSelection()?.toString());
   }
 
   private activateRelation(
@@ -1939,6 +1944,7 @@ export class TranslationStudyView extends ItemView {
     comment.rows = 3;
     comment.placeholder = "写下这组对应关系的说明";
     comment.value = relation.note;
+    this.bindPersistentNoteHeight(comment);
     let noteTimer = 0;
     comment.addEventListener("input", () => {
       relation.note = comment.value;
@@ -1990,6 +1996,12 @@ export class TranslationStudyView extends ItemView {
     relation: TranslationRelation,
   ): void {
     const picker = parent.createDiv({ cls: "translation-tag-picker" });
+    const onOutsidePointerDown = (event: PointerEvent): void => {
+      if (picker.isConnected && event.target instanceof Node && picker.contains(event.target)) return;
+      document.removeEventListener("pointerdown", onOutsidePointerDown, true);
+      picker.remove();
+    };
+    document.addEventListener("pointerdown", onOutsidePointerDown, true);
     const search = picker.createDiv({ cls: "translation-tag-picker-search" });
     setIcon(search.createSpan(), "search");
     const input = search.createEl("input", { type: "text", placeholder: "搜索标签，或输入 # 查找 Obsidian Tag" });
@@ -2158,8 +2170,9 @@ export class TranslationStudyView extends ItemView {
       cls: "translation-comparison-note-editor",
       placeholder: "记录这个条目的整体对照结论",
     });
-    textarea.rows = 6;
+    textarea.rows = 4;
     textarea.value = unit.comparisonNote;
+    this.bindPersistentNoteHeight(textarea);
     let timer = 0;
     textarea.addEventListener("input", () => {
       unit.comparisonNote = textarea.value;
@@ -2180,15 +2193,10 @@ export class TranslationStudyView extends ItemView {
     label: string,
   ): void {
     const notes = stage === "translation" ? unit.translationNotes : unit.backTranslationNotes;
-    const section = parent.createEl("details", { cls: "translation-sentence-note" });
-    const summary = section.createEl("summary", { cls: "translation-sentence-note-summary" });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
-    summary.createSpan({ cls: "translation-sentence-note-label", text: label });
-    const preview = summary.createSpan({
-      cls: `translation-sentence-note-preview${notes[0]?.text ? "" : " is-empty"}`,
-      text: notes[0]?.text || "添加",
-    });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-chevron" }), "chevron-down");
+    const section = parent.createDiv({ cls: "translation-sentence-note is-static" });
+    const heading = section.createDiv({ cls: "translation-sentence-note-heading" });
+    setIcon(heading.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
+    heading.createSpan({ cls: "translation-sentence-note-label", text: label });
 
     const editorWrap = section.createDiv({ cls: "translation-sentence-note-editor-wrap" });
     const textarea = editorWrap.createEl("textarea", {
@@ -2199,9 +2207,7 @@ export class TranslationStudyView extends ItemView {
     textarea.value = notes[0]?.text ?? "";
     let saveTimer = 0;
     textarea.addEventListener("input", () => {
-      const note = setTranslationNote(unit, stage, textarea.value);
-      preview.textContent = note?.text || "添加";
-      preview.toggleClass("is-empty", !note);
+      setTranslationNote(unit, stage, textarea.value);
       window.clearTimeout(saveTimer);
       saveTimer = window.setTimeout(() => void this.persist(exercise, false), 320);
     });
@@ -2209,8 +2215,18 @@ export class TranslationStudyView extends ItemView {
       window.clearTimeout(saveTimer);
       void this.persist(exercise, false);
     });
-    section.addEventListener("toggle", () => {
-      if (section.open) window.setTimeout(() => textarea.focus(), 0);
+  }
+
+  private bindPersistentNoteHeight(textarea: HTMLTextAreaElement): void {
+    const saved = this.host.getNoteEditorHeight();
+    if (saved) textarea.style.height = `${saved}px`;
+    let startHeight = 0;
+    textarea.addEventListener("mousedown", () => {
+      startHeight = textarea.offsetHeight;
+    });
+    textarea.addEventListener("mouseup", () => {
+      const height = textarea.offsetHeight;
+      if (height > 0 && height !== startHeight) void this.host.setNoteEditorHeight(height);
     });
   }
 
@@ -2458,6 +2474,7 @@ export class TranslationStudyView extends ItemView {
           this.render();
         };
         wrapper.addEventListener("click", (event) => {
+          if (this.hasTextSelection()) return;
           const relationId = event.target instanceof Element
             ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
             : undefined;
@@ -2558,6 +2575,7 @@ export class TranslationStudyView extends ItemView {
       : undefined;
     renderRangeText(content, text, relations, side, [], activeId);
     content.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const relationId = event.target instanceof Element
         ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
         : undefined;
@@ -2579,6 +2597,7 @@ export class TranslationStudyView extends ItemView {
     const text = reference.createDiv({ cls: "translation-completed-reference-text" });
     renderRangeText(text, unit.translation, unit.translationRelations, "right");
     text.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const relationId = event.target instanceof Element
         ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
         : undefined;
@@ -2622,6 +2641,7 @@ export class TranslationStudyView extends ItemView {
       row.createSpan({ cls: "translation-completed-relation-number", text: String(index + 1) });
       row.createSpan({ text: this.describeRelation(unit, relation, layer) });
       row.addEventListener("click", () => {
+        if (this.hasTextSelection()) return;
         this.activeRelation = active ? null : { unitId: unit.id, layer, relationId: relation.id };
         exercise.activeUnitId = unit.id;
         this.render();
