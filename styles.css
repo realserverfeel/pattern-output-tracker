@@ -8040,3 +8040,32 @@
 .translation-app .translation-relation-comment textarea {
   box-sizing: border-box;
 }
+
+/* A: back-translation unit mode — the 回译 editor is the flexible main
+   body. It grows to fill the space left by the (fixed) material and
+   note cards, so short content never leaves a void above the pinned
+   footer; long content overflows into the layout's own scroll. */
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+}
+
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-back-material,
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note {
+  flex: 0 0 auto;
+}
+
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 160px;
+}
+
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+}
