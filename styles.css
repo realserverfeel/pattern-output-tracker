@@ -1086,7 +1086,9 @@
 
 .translation-unit-editor {
   width: 100%;
-  min-height: 176px;
+  min-height: 120px;
+  max-height: 240px;
+  overflow-y: auto;
   padding: 0;
   border: 0;
   color: var(--tx-ink);
