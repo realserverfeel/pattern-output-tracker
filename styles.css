@@ -22,12 +22,12 @@
   --tx-raised: var(--background-primary);
   --tx-radius: 18px;
   --tx-shadow: 0 14px 42px color-mix(in srgb, #1d1738 10%, transparent);
-  --tx-fs-root: max(15px, var(--font-text-size, 16px));
-  --tx-fs-canvas: calc(var(--tx-fs-root) * 1.06);
+  --tx-fs-root: max(16px, var(--font-text-size, 16px));
+  --tx-fs-canvas: calc(var(--tx-fs-root) * 1.12);
   --tx-fs-body: var(--tx-fs-root);
-  --tx-fs-secondary: calc(var(--tx-fs-root) * .92);
-  --tx-fs-label: calc(var(--tx-fs-root) * .8);
-  --tx-fs-meta: calc(var(--tx-fs-root) * .8);
+  --tx-fs-secondary: calc(var(--tx-fs-root) * .98);
+  --tx-fs-label: calc(var(--tx-fs-root) * .84);
+  --tx-fs-meta: calc(var(--tx-fs-root) * .82);
   box-sizing: border-box;
   container-type: inline-size;
   height: 100%;
@@ -7841,8 +7841,9 @@
   line-height: 1.8;
 }
 
-/* Secondary content — descriptions, tags, notes, placeholders,
-   reference summaries: still comfortably readable. */
+/* Primary study content — relation fragments, descriptions, tags,
+   comments and notes are the main learning material, not captions:
+   they render at body size. */
 .translation-app .translation-readonly-notes,
 .translation-app .translation-readonly-notes > div,
 .translation-app .translation-context-placeholder-value,
@@ -7854,14 +7855,23 @@
 .translation-app .translation-tag-picker-row,
 .translation-app .translation-tag-add-button,
 .translation-app .translation-relation-draft-fragment,
+.translation-app .translation-relation-draft-side,
+.translation-app .translation-relation-draft-empty,
+.translation-app .translation-relation-instruction,
+.translation-app .translation-relation-instruction strong,
 .translation-app .translation-completed-note-row,
 .translation-app .translation-completed-relation-row,
-.translation-app .translation-reference-relation,
+.translation-app .translation-reference-relation {
+  font-size: var(--tx-fs-body);
+  line-height: 1.55;
+}
+
+/* Secondary — nav previews and small index badges only. */
 .translation-app .translation-unit-preview,
 .translation-app .translation-reference-relation-index,
 .translation-app .translation-completed-relation-index {
   font-size: var(--tx-fs-secondary);
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 /* Section labels / kickers / tabs — small tier, floored. */
