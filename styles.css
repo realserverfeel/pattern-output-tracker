@@ -27,6 +27,8 @@
   height: 100%;
   min-height: 0;
   overflow: auto;
+  -webkit-user-select: text;
+  user-select: text;
   color: var(--tx-ink);
   background:
     radial-gradient(circle at 78% -12%, color-mix(in srgb, var(--tx-accent) 8%, transparent), transparent 34rem),
@@ -509,6 +511,8 @@
 /* Capture */
 
 .translation-capture-modal {
+  -webkit-user-select: text;
+  user-select: text;
   width: min(640px, calc(100vw - 32px));
   border: 1px solid color-mix(in srgb, var(--text-normal) 12%, transparent);
   border-radius: 22px;
@@ -6150,6 +6154,10 @@
   transition: transform .16s ease;
 }
 
+.translation-app .translation-sentence-note[open] .translation-sentence-note-preview {
+  visibility: hidden;
+}
+
 .translation-app .translation-sentence-note[open] .translation-sentence-note-chevron {
   transform: rotate(180deg);
 }
@@ -7625,4 +7633,56 @@
   font-weight: 600;
   color: var(--tx-muted);
   letter-spacing: .08em;
+}
+
+/* Breathing pass: one label voice and one vertical rhythm for the inspector
+   column, in every mode. Sections are separated by whitespace, not hairlines. */
+.translation-app .translation-notes-title,
+.translation-app .translation-field-label,
+.translation-app .translation-card-label,
+.translation-app .translation-reference-kicker,
+.translation-app .translation-full-reference > summary {
+  color: var(--tx-muted);
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: .08em;
+}
+
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker {
+  margin-bottom: 10px;
+}
+
+.translation-app .translation-full-processor-body {
+  gap: 18px;
+  padding: 22px 22px 8px;
+}
+
+.translation-app .translation-full-processor .translation-full-reference {
+  margin-top: 0;
+  border: 0;
+  background: transparent;
+}
+
+.translation-app .translation-full-processor .translation-full-reference > summary {
+  padding: 0;
+}
+
+.translation-app .translation-full-processor .translation-full-reference .translation-full-layer.is-compact {
+  padding: 10px 0 0;
+}
+
+.translation-app .translation-full-processor-context {
+  border-top: 0;
+  padding: 24px 22px 24px;
+}
+
+.translation-app .translation-full-processor-context .translation-relation-inspector,
+.translation-app .translation-full-processor-context .translation-relation-composer.is-drafting,
+.translation-app .translation-full-processor-context .translation-context-placeholder {
+  padding-bottom: 24px;
+}
+
+.translation-app .translation-full-processor .translation-comparison-note {
+  padding-top: 0;
 }
