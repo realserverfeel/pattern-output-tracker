@@ -978,6 +978,7 @@ export default class PatternOutputTrackerPlugin extends Plugin {
 
     this.applyFontSizes();
     this.addSettingTab(new PatternOutputTrackerSettingTab(this.app, this));
+    new Notice(`Pattern Output Tracker v${this.manifest.version} 已加载：设置中可调字号`, 4000);
 
     this.registerView(VIEW_TYPE_PATTERN_LIBRARY, (leaf) => new PatternLibraryView(leaf, this));
     this.registerView(VIEW_TYPE_TAG_MANAGER, (leaf) => new TagManagerView(leaf, this));

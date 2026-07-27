@@ -1,7 +1,7 @@
 {
   "id": "pattern-output-tracker",
   "name": "Pattern Output Tracker",
-  "version": "0.8.0-alpha.18",
+  "version": "0.8.0-alpha.19",
   "minAppVersion": "1.0.0",
   "description": "Build language patterns and work through unit-based translation exercises.",
   "author": "Local prototype",

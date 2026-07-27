@@ -1,6 +1,6 @@
 {
   "name": "pattern-output-tracker",
-  "version": "0.8.0-alpha.18",
+  "version": "0.8.0-alpha.19",
   "description": "Coordinate-based Pattern Maker for English and Japanese writing output.",
   "main": "main.js",
   "type": "module",
