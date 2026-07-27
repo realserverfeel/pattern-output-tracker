@@ -10,6 +10,7 @@ import {
   Notice,
   normalizePath,
   Plugin,
+  PluginSettingTab,
   Setting,
   TFile,
   WorkspaceLeaf,
@@ -101,12 +102,94 @@ interface TagDataFile {
   tags: PatternTag[];
 }
 
+const FONT_STYLE_ELEMENT_ID = "pattern-output-tracker-font-scale";
+
+type FontCategory = "canvas" | "content" | "note" | "label" | "meta";
+
+interface FontCategoryMeta {
+  key: FontCategory;
+  cssVar: string;
+  name: string;
+  desc: string;
+  min: number;
+  max: number;
+  default: number;
+}
+
+const FONT_CATEGORIES: readonly FontCategoryMeta[] = [
+  {
+    key: "canvas",
+    cssVar: "--tx-fs-canvas",
+    name: "文章正文（原文 / 译文 / 全文）",
+    desc: "阅读和编辑的主要句子文字，最重要。",
+    min: 14,
+    max: 30,
+    default: 20,
+  },
+  {
+    key: "content",
+    cssVar: "--tx-fs-body",
+    name: "关联与检查器内容",
+    desc: "关联片段、关联描述、Tag、评论、参照摘要等。",
+    min: 13,
+    max: 26,
+    default: 17,
+  },
+  {
+    key: "note",
+    cssVar: "--tx-fs-note",
+    name: "批注与笔记",
+    desc: "句子批注、初译批注、回译笔记、对照笔记等。",
+    min: 13,
+    max: 26,
+    default: 17,
+  },
+  {
+    key: "label",
+    cssVar: "--tx-fs-label",
+    name: "区块小标签",
+    desc: "各区块标题、字段名（如“原文”“关联”“Tags”）。",
+    min: 11,
+    max: 20,
+    default: 14,
+  },
+  {
+    key: "meta",
+    cssVar: "--tx-fs-meta",
+    name: "元信息",
+    desc: "进度、页眉计数、自动保存、段落序号等辅助信息。",
+    min: 10,
+    max: 18,
+    default: 13,
+  },
+];
+
+const DEFAULT_FONT_SIZES: Record<FontCategory, number> = FONT_CATEGORIES.reduce(
+  (acc, category) => {
+    acc[category.key] = category.default;
+    return acc;
+  },
+  {} as Record<FontCategory, number>,
+);
+
+function sanitizeFontSizes(raw: Partial<Record<FontCategory, unknown>> | undefined): Record<FontCategory, number> {
+  const result = { ...DEFAULT_FONT_SIZES };
+  for (const category of FONT_CATEGORIES) {
+    const value = raw?.[category.key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      result[category.key] = Math.min(category.max, Math.max(category.min, Math.round(value)));
+    }
+  }
+  return result;
+}
+
 interface PluginSettings {
   schemaVersion: number;
   highlightHits: boolean;
   caseSensitive: boolean;
   defaultBackTranslationDelayDays: number;
   translationWorkbenchModes: Record<TranslationWorkbenchStage, TranslationWorkbenchMode>;
+  fontSizes: Record<FontCategory, number>;
 }
 
 interface MatchRange {
@@ -139,6 +222,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
     backTranslate: "unit",
     compare: "unit",
   },
+  fontSizes: { ...DEFAULT_FONT_SIZES },
 };
 
 const LEGACY_KIND_TAG_PATHS: Record<string, string | undefined> = {
@@ -852,6 +936,37 @@ export default class PatternOutputTrackerPlugin extends Plugin {
     await this.writeJsonFile(SETTINGS_FILE, this.settings);
   }
 
+  getFontSizes(): Record<FontCategory, number> {
+    return sanitizeFontSizes(this.settings.fontSizes);
+  }
+
+  async setFontSize(category: FontCategory, value: number): Promise<void> {
+    this.settings.fontSizes = { ...this.getFontSizes(), [category]: value };
+    this.settings.fontSizes = sanitizeFontSizes(this.settings.fontSizes);
+    this.applyFontSizes();
+    await this.writeJsonFile(SETTINGS_FILE, this.settings);
+  }
+
+  async resetFontSizes(): Promise<void> {
+    this.settings.fontSizes = { ...DEFAULT_FONT_SIZES };
+    this.applyFontSizes();
+    await this.writeJsonFile(SETTINGS_FILE, this.settings);
+  }
+
+  applyFontSizes(): void {
+    const sizes = this.getFontSizes();
+    const declarations = FONT_CATEGORIES
+      .map((category) => `  ${category.cssVar}: ${sizes[category.key]}px;`)
+      .join("\n");
+    let style = document.getElementById(FONT_STYLE_ELEMENT_ID) as HTMLStyleElement | null;
+    if (!style) {
+      style = document.createElement("style");
+      style.id = FONT_STYLE_ELEMENT_ID;
+      document.head.appendChild(style);
+    }
+    style.textContent = `.translation-app,\n.translation-article-page,\n.translation-capture-modal {\n${declarations}\n}`;
+  }
+
   async onload(): Promise<void> {
     try {
       await this.loadVaultData();
@@ -860,6 +975,9 @@ export default class PatternOutputTrackerPlugin extends Plugin {
       console.error("Pattern Output Tracker failed to load Vault data", error);
       new Notice(`无法读取 ${STORAGE_FOLDER} 中的数据：${describeError(error)}`, 10000);
     }
+
+    this.applyFontSizes();
+    this.addSettingTab(new PatternOutputTrackerSettingTab(this.app, this));
 
     this.registerView(VIEW_TYPE_PATTERN_LIBRARY, (leaf) => new PatternLibraryView(leaf, this));
     this.registerView(VIEW_TYPE_TAG_MANAGER, (leaf) => new TagManagerView(leaf, this));
@@ -919,6 +1037,7 @@ export default class PatternOutputTrackerPlugin extends Plugin {
 
   onunload(): void {
     this.dataChangeListeners.clear();
+    document.getElementById(FONT_STYLE_ELEMENT_ID)?.remove();
   }
 
   private async loadVaultData(): Promise<void> {
@@ -941,6 +1060,7 @@ export default class PatternOutputTrackerPlugin extends Plugin {
         ...DEFAULT_SETTINGS.translationWorkbenchModes,
         ...(loadedSettings.translationWorkbenchModes ?? {}),
       },
+      fontSizes: sanitizeFontSizes(loadedSettings.fontSizes),
       schemaVersion: SETTINGS_SCHEMA_VERSION,
     };
 
@@ -1594,5 +1714,52 @@ export default class PatternOutputTrackerPlugin extends Plugin {
     for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_TRANSLATION_STUDY)) {
       if (leaf.view instanceof TranslationStudyView) leaf.view.render();
     }
+  }
+}
+
+class PatternOutputTrackerSettingTab extends PluginSettingTab {
+  constructor(app: App, private readonly plugin: PatternOutputTrackerPlugin) {
+    super(app, plugin);
+  }
+
+  display(): void {
+    const { containerEl } = this;
+    containerEl.empty();
+
+    new Setting(containerEl).setName("界面字号").setHeading();
+    containerEl.createEl("p", {
+      cls: "setting-item-description",
+      text: "按内容类别分别设置翻译练习界面的文字大小（单位 px）。数值会实时生效，也可跟随 Obsidian 主题的可读性。",
+    });
+
+    const sizes = this.plugin.getFontSizes();
+    for (const category of FONT_CATEGORIES) {
+      const setting = new Setting(containerEl).setName(category.name).setDesc(category.desc);
+      let valueLabel: HTMLElement | null = null;
+      setting.addSlider((slider) => {
+        slider
+          .setLimits(category.min, category.max, 1)
+          .setValue(sizes[category.key])
+          .setDynamicTooltip()
+          .onChange(async (value) => {
+            if (valueLabel) valueLabel.setText(`${value}px`);
+            await this.plugin.setFontSize(category.key, value);
+          });
+      });
+      valueLabel = setting.controlEl.createSpan({
+        cls: "pattern-font-size-value",
+        text: `${sizes[category.key]}px`,
+      });
+    }
+
+    new Setting(containerEl)
+      .setName("恢复默认字号")
+      .setDesc("将上面所有类别恢复为插件推荐的默认大小。")
+      .addButton((button) => {
+        button.setButtonText("恢复默认").onClick(async () => {
+          await this.plugin.resetFontSizes();
+          this.display();
+        });
+      });
   }
 }

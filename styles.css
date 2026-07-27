@@ -22,12 +22,15 @@
   --tx-raised: var(--background-primary);
   --tx-radius: 18px;
   --tx-shadow: 0 14px 42px color-mix(in srgb, #1d1738 10%, transparent);
-  --tx-fs-root: max(16px, var(--font-text-size, 16px));
-  --tx-fs-canvas: calc(var(--tx-fs-root) * 1.12);
-  --tx-fs-body: var(--tx-fs-root);
-  --tx-fs-secondary: calc(var(--tx-fs-root) * .98);
-  --tx-fs-label: calc(var(--tx-fs-root) * .84);
-  --tx-fs-meta: calc(var(--tx-fs-root) * .82);
+  /* Fallback defaults; the plugin injects per-category overrides
+     from the settings tab (--tx-fs-canvas/body/note/label/meta). */
+  --tx-fs-root: 17px;
+  --tx-fs-canvas: 20px;
+  --tx-fs-body: 17px;
+  --tx-fs-note: 17px;
+  --tx-fs-secondary: calc(var(--tx-fs-body) * .92);
+  --tx-fs-label: 14px;
+  --tx-fs-meta: 13px;
   box-sizing: border-box;
   container-type: inline-size;
   height: 100%;
@@ -7814,7 +7817,8 @@
    micro. This block is the single source of truth for sizing
    and overrides the historical scattered px values. */
 
-/* Content text — always readable body size. */
+/* CANVAS — the article itself: source, translation, full-text flow.
+   The largest, most important reading/editing surfaces. */
 .translation-app .translation-selectable-text,
 .translation-app .translation-context-text,
 .translation-app .translation-reference-text,
@@ -7822,17 +7826,12 @@
 .translation-app .translation-unit-editor,
 .translation-app .translation-editor,
 .translation-app .translation-editor textarea,
-.translation-app .translation-sentence-note-editor,
-.translation-app .translation-sentence-note-readonly-value,
-.translation-app .translation-relation-comment-editor,
-.translation-app .translation-relation-comment-value,
-.translation-app .translation-comparison-note-editor,
 .translation-app .translation-full-unit-surface,
 .translation-app .translation-completed-unit-text,
 .translation-app .translation-completed-text,
 .translation-app .translation-completed-reference-text {
-  font-size: var(--tx-fs-body);
-  line-height: 1.6;
+  font-size: var(--tx-fs-canvas);
+  line-height: 1.65;
 }
 
 .translation-app .translation-full-flow,
@@ -7841,16 +7840,13 @@
   line-height: 1.8;
 }
 
-/* Primary study content — relation fragments, descriptions, tags,
-   comments and notes are the main learning material, not captions:
-   they render at body size. */
-.translation-app .translation-readonly-notes,
-.translation-app .translation-readonly-notes > div,
+/* CONTENT — relation fragments, descriptions, tags, comments,
+   references: the main study material in the inspector. */
 .translation-app .translation-context-placeholder-value,
 .translation-app .translation-reference-relation-summary,
 .translation-app .translation-relation-inspector-summary,
-.translation-app .translation-reference-note,
-.translation-app .translation-full-reference-note,
+.translation-app .translation-relation-comment-value,
+.translation-app .translation-relation-comment-editor,
 .translation-app .translation-relation-tag,
 .translation-app .translation-tag-picker-row,
 .translation-app .translation-tag-add-button,
@@ -7859,11 +7855,27 @@
 .translation-app .translation-relation-draft-empty,
 .translation-app .translation-relation-instruction,
 .translation-app .translation-relation-instruction strong,
-.translation-app .translation-completed-note-row,
 .translation-app .translation-completed-relation-row,
 .translation-app .translation-reference-relation {
   font-size: var(--tx-fs-body);
   line-height: 1.55;
+}
+
+/* NOTE — every annotation / note body (sentence notes, initial-
+   translation notes, back-translation notes, comparison notes). */
+.translation-app .translation-sentence-note-editor,
+.translation-app .translation-sentence-note-readonly-value,
+.translation-app .translation-comparison-note-editor,
+.translation-app .translation-readonly-notes,
+.translation-app .translation-readonly-notes > div,
+.translation-app .translation-reference-note,
+.translation-app .translation-full-reference-note,
+.translation-app .translation-completed-note-row,
+.translation-app .translation-completed-note-row strong,
+.translation-app .translation-completed-note-row div,
+.translation-app .translation-completed-reference-note {
+  font-size: var(--tx-fs-note);
+  line-height: 1.6;
 }
 
 /* Secondary — nav previews and small index badges only. */
@@ -7959,4 +7971,13 @@
 .translation-app .translation-completed-document-heading strong,
 .translation-app .translation-completed-document-heading span {
   font-size: var(--tx-fs-meta);
+}
+
+/* Font-size settings tab: current value readout next to each slider. */
+.pattern-font-size-value {
+  min-width: 44px;
+  margin-left: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
