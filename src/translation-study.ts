@@ -1094,7 +1094,7 @@ export class TranslationStudyView extends ItemView {
         surface.setAttr("aria-label", `${options.label || "文本"} S${getTranslationUnits(exercise).indexOf(unit) + 1}`);
         surface.spellcheck = true;
       }
-      const draft = this.relationDraft?.layer === options.relations
+      const draft = unit.id === exercise.activeUnitId && this.relationDraft?.layer === options.relations
         ? (options.side === "left" ? this.relationDraft.left : this.relationDraft.right)
         : [];
       const activeRelationId = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === options.relations
