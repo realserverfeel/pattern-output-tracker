@@ -172,6 +172,11 @@ const DEFAULT_FONT_SIZES: Record<FontCategory, number> = FONT_CATEGORIES.reduce(
   {} as Record<FontCategory, number>,
 );
 
+function sanitizeNoteEditorHeight(raw: unknown): number | null {
+  if (typeof raw !== "number" || !Number.isFinite(raw)) return null;
+  return Math.min(NOTE_EDITOR_MAX_HEIGHT, Math.max(NOTE_EDITOR_MIN_HEIGHT, Math.round(raw)));
+}
+
 function sanitizeFontSizes(raw: Partial<Record<FontCategory, unknown>> | undefined): Record<FontCategory, number> {
   const result = { ...DEFAULT_FONT_SIZES };
   for (const category of FONT_CATEGORIES) {
@@ -190,7 +195,11 @@ interface PluginSettings {
   defaultBackTranslationDelayDays: number;
   translationWorkbenchModes: Record<TranslationWorkbenchStage, TranslationWorkbenchMode>;
   fontSizes: Record<FontCategory, number>;
+  noteEditorHeight: number | null;
 }
+
+const NOTE_EDITOR_MIN_HEIGHT = 56;
+const NOTE_EDITOR_MAX_HEIGHT = 900;
 
 interface MatchRange {
   from: number;
@@ -223,6 +232,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
     compare: "unit",
   },
   fontSizes: { ...DEFAULT_FONT_SIZES },
+  noteEditorHeight: null,
 };
 
 const LEGACY_KIND_TAG_PATHS: Record<string, string | undefined> = {
@@ -947,6 +957,17 @@ export default class PatternOutputTrackerPlugin extends Plugin {
     await this.writeJsonFile(SETTINGS_FILE, this.settings);
   }
 
+  getNoteEditorHeight(): number | null {
+    return sanitizeNoteEditorHeight(this.settings.noteEditorHeight);
+  }
+
+  async setNoteEditorHeight(height: number): Promise<void> {
+    const next = sanitizeNoteEditorHeight(height);
+    if (next === this.settings.noteEditorHeight) return;
+    this.settings.noteEditorHeight = next;
+    await this.writeJsonFile(SETTINGS_FILE, this.settings);
+  }
+
   async resetFontSizes(): Promise<void> {
     this.settings.fontSizes = { ...DEFAULT_FONT_SIZES };
     this.applyFontSizes();
@@ -1062,6 +1083,7 @@ export default class PatternOutputTrackerPlugin extends Plugin {
         ...(loadedSettings.translationWorkbenchModes ?? {}),
       },
       fontSizes: sanitizeFontSizes(loadedSettings.fontSizes),
+      noteEditorHeight: sanitizeNoteEditorHeight(loadedSettings.noteEditorHeight),
       schemaVersion: SETTINGS_SCHEMA_VERSION,
     };
 

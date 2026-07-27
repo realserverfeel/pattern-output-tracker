@@ -7983,3 +7983,60 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
+
+/* Inspector empty state — a tasteful centered figure instead of an
+   ugly white void when the back-translation / relation rail has no
+   active content. Shares the column frame; fills its height. */
+.translation-app .translation-context-sidebar:has(> .translation-context-placeholder.is-empty) {
+  display: flex;
+  flex-direction: column;
+}
+
+.translation-app .translation-context-placeholder.is-empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.translation-app .translation-context-placeholder.is-empty .translation-context-empty-figure {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  padding: 26px 20px;
+  border: 1px dashed var(--tx-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--tx-accent) 3%, transparent);
+  color: var(--tx-faint);
+  text-align: center;
+}
+
+.translation-app .translation-context-empty-icon {
+  display: inline-flex;
+  color: color-mix(in srgb, var(--tx-accent) 45%, var(--tx-faint));
+}
+
+.translation-app .translation-context-empty-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.translation-app .translation-context-placeholder.is-empty .translation-context-placeholder-value {
+  max-width: 22ch;
+  font-size: var(--tx-fs-meta);
+  line-height: 1.5;
+  color: var(--tx-faint);
+}
+
+/* Note / comment editors: border-box so persisted drag-height is exact. */
+.translation-app .translation-sentence-note-editor,
+.translation-app .translation-comparison-note-editor,
+.translation-app .translation-relation-comment textarea {
+  box-sizing: border-box;
+}

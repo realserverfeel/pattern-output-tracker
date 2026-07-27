@@ -61,6 +61,8 @@ export interface TranslationStudyHost {
   saveTranslationTag(path: string, obsidianTags: string[]): Promise<TranslationTagOption>;
   getTranslationWorkbenchMode(stage: TranslationWorkbenchStage): TranslationWorkbenchMode;
   setTranslationWorkbenchMode(stage: TranslationWorkbenchStage, mode: TranslationWorkbenchMode): Promise<void>;
+  getNoteEditorHeight(): number | null;
+  setNoteEditorHeight(height: number): Promise<void>;
 }
 
 export interface TranslationTagOption {
@@ -1452,12 +1454,28 @@ export class TranslationStudyView extends ItemView {
     return main;
   }
 
+  private renderInspectorEmptyState(
+    sidebar: HTMLElement,
+    kicker: string,
+    hint: string,
+    icon: string,
+  ): void {
+    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder is-empty" });
+    placeholder.createDiv({ cls: "translation-reference-kicker", text: kicker });
+    const figure = placeholder.createDiv({ cls: "translation-context-empty-figure" });
+    setIcon(figure.createSpan({ cls: "translation-context-empty-icon" }), icon);
+    figure.createDiv({ text: hint, cls: "translation-context-placeholder-value" });
+  }
+
   private renderBackTranslationAnnotationPlaceholder(sidebar: HTMLElement, unit: TranslationUnit): void {
     const hasActive = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === "translation";
     if (hasActive) return;
-    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder" });
-    placeholder.createDiv({ cls: "translation-reference-kicker", text: "初译批注" });
-    placeholder.createDiv({ text: "选择初译材料中的标记查看", cls: "translation-context-placeholder-value" });
+    this.renderInspectorEmptyState(
+      sidebar,
+      "初译批注",
+      "选择初译材料中的标记查看",
+      "message-square-text",
+    );
   }
 
   private renderContextPlaceholder(
@@ -1468,12 +1486,12 @@ export class TranslationStudyView extends ItemView {
     const hasDraft = this.relationDraft?.layer === layer;
     const hasActive = this.activeRelation?.unitId === unit.id && this.activeRelation.layer === layer;
     if (hasDraft || hasActive) return;
-    const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder" });
-    placeholder.createDiv({ cls: "translation-reference-kicker", text: "关联" });
-    placeholder.createDiv({
-      text: layer === "comparison" ? "拖选原文与回译片段建立关联" : "拖选原文与译文片段建立关联",
-      cls: "translation-context-placeholder-value",
-    });
+    this.renderInspectorEmptyState(
+      sidebar,
+      "关联",
+      layer === "comparison" ? "拖选原文与回译片段建立关联" : "拖选原文与译文片段建立关联",
+      "link",
+    );
   }
 
   private renderUnifiedReadOnlyCard(
@@ -1926,6 +1944,7 @@ export class TranslationStudyView extends ItemView {
     comment.rows = 3;
     comment.placeholder = "写下这组对应关系的说明";
     comment.value = relation.note;
+    this.bindPersistentNoteHeight(comment);
     let noteTimer = 0;
     comment.addEventListener("input", () => {
       relation.note = comment.value;
@@ -2153,6 +2172,7 @@ export class TranslationStudyView extends ItemView {
     });
     textarea.rows = 4;
     textarea.value = unit.comparisonNote;
+    this.bindPersistentNoteHeight(textarea);
     let timer = 0;
     textarea.addEventListener("input", () => {
       unit.comparisonNote = textarea.value;
@@ -2185,6 +2205,7 @@ export class TranslationStudyView extends ItemView {
     });
     textarea.rows = 2;
     textarea.value = notes[0]?.text ?? "";
+    this.bindPersistentNoteHeight(textarea);
     let saveTimer = 0;
     textarea.addEventListener("input", () => {
       setTranslationNote(unit, stage, textarea.value);
@@ -2194,6 +2215,19 @@ export class TranslationStudyView extends ItemView {
     textarea.addEventListener("blur", () => {
       window.clearTimeout(saveTimer);
       void this.persist(exercise, false);
+    });
+  }
+
+  private bindPersistentNoteHeight(textarea: HTMLTextAreaElement): void {
+    const saved = this.host.getNoteEditorHeight();
+    if (saved) textarea.style.height = `${saved}px`;
+    let startHeight = 0;
+    textarea.addEventListener("mousedown", () => {
+      startHeight = textarea.offsetHeight;
+    });
+    textarea.addEventListener("mouseup", () => {
+      const height = textarea.offsetHeight;
+      if (height > 0 && height !== startHeight) void this.host.setNoteEditorHeight(height);
     });
   }
 
