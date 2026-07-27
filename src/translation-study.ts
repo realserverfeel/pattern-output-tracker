@@ -1019,26 +1019,6 @@ export class TranslationStudyView extends ItemView {
     unit: TranslationUnit,
     stage: TranslationWorkbenchStage,
   ): void {
-    const units = getTranslationUnits(exercise);
-    const index = units.indexOf(unit);
-    const header = processor.createDiv({ cls: "translation-full-processor-header" });
-    const identity = header.createDiv({ cls: "translation-full-processor-identity" });
-    identity.createSpan({ text: "当前单位" });
-    identity.createEl("strong", { text: `S${index + 1}` });
-    const navigation = header.createDiv({ cls: "translation-full-processor-navigation" });
-    const previous = iconButton(navigation, "chevron-left", "上一项");
-    previous.disabled = index <= 0;
-    previous.addEventListener("click", () => {
-      const target = units[index - 1];
-      if (target) this.activateFullTextUnit(workspace, exercise, target, stage);
-    });
-    const next = iconButton(navigation, "chevron-right", "下一项");
-    next.disabled = index < 0 || index >= units.length - 1;
-    next.addEventListener("click", () => {
-      const target = units[index + 1];
-      if (target) this.activateFullTextUnit(workspace, exercise, target, stage);
-    });
-
     const body = processor.createDiv({ cls: "translation-full-processor-body translation-unified-pair" });
     if (stage === "translate") {
       this.renderUnifiedEditableCard(body, workspace, exercise, unit, "译文", "translation", unit.translationRelations, "translation");
@@ -1246,7 +1226,10 @@ export class TranslationStudyView extends ItemView {
         text: this.describeRelation(unit, relation, "translation"),
       });
       if (relation.note) row.createSpan({ cls: "translation-reference-note", text: relation.note });
-      row.addEventListener("click", () => activate(relation.id));
+      row.addEventListener("click", () => {
+        if (this.hasTextSelection()) return;
+        activate(relation.id);
+      });
     });
 
     units.forEach((unit) => {
@@ -1259,6 +1242,7 @@ export class TranslationStudyView extends ItemView {
     });
 
     referenceLayer.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-relation-id]") : null;
       if (target?.dataset.relationId) activate(target.dataset.relationId);
     });
@@ -1446,6 +1430,7 @@ export class TranslationStudyView extends ItemView {
         }
       };
       referenceText.addEventListener("click", (event) => {
+        if (this.hasTextSelection()) return;
         const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-relation-id]") : null;
         if (target?.dataset.relationId) activateReference(target.dataset.relationId);
       });
@@ -1457,6 +1442,7 @@ export class TranslationStudyView extends ItemView {
         activateReference(target.dataset.relationId);
       });
       relationList.addEventListener("click", (event) => {
+        if (this.hasTextSelection()) return;
         const target = event.target instanceof Element
           ? event.target.closest<HTMLElement>("[data-reference-relation-id]")
           : null;
@@ -1706,6 +1692,10 @@ export class TranslationStudyView extends ItemView {
   private removeSelectionPopover(): void {
     this.selectionPopover?.remove();
     this.selectionPopover = null;
+  }
+
+  private hasTextSelection(): boolean {
+    return Boolean(window.getSelection()?.toString());
   }
 
   private activateRelation(
@@ -1993,6 +1983,12 @@ export class TranslationStudyView extends ItemView {
     relation: TranslationRelation,
   ): void {
     const picker = parent.createDiv({ cls: "translation-tag-picker" });
+    const onOutsidePointerDown = (event: PointerEvent): void => {
+      if (picker.isConnected && event.target instanceof Node && picker.contains(event.target)) return;
+      document.removeEventListener("pointerdown", onOutsidePointerDown, true);
+      picker.remove();
+    };
+    document.addEventListener("pointerdown", onOutsidePointerDown, true);
     const search = picker.createDiv({ cls: "translation-tag-picker-search" });
     setIcon(search.createSpan(), "search");
     const input = search.createEl("input", { type: "text", placeholder: "搜索标签，或输入 # 查找 Obsidian Tag" });
@@ -2461,6 +2457,7 @@ export class TranslationStudyView extends ItemView {
           this.render();
         };
         wrapper.addEventListener("click", (event) => {
+          if (this.hasTextSelection()) return;
           const relationId = event.target instanceof Element
             ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
             : undefined;
@@ -2561,6 +2558,7 @@ export class TranslationStudyView extends ItemView {
       : undefined;
     renderRangeText(content, text, relations, side, [], activeId);
     content.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const relationId = event.target instanceof Element
         ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
         : undefined;
@@ -2582,6 +2580,7 @@ export class TranslationStudyView extends ItemView {
     const text = reference.createDiv({ cls: "translation-completed-reference-text" });
     renderRangeText(text, unit.translation, unit.translationRelations, "right");
     text.addEventListener("click", (event) => {
+      if (this.hasTextSelection()) return;
       const relationId = event.target instanceof Element
         ? event.target.closest<HTMLElement>("[data-relation-id]")?.dataset.relationId
         : undefined;
@@ -2625,6 +2624,7 @@ export class TranslationStudyView extends ItemView {
       row.createSpan({ cls: "translation-completed-relation-number", text: String(index + 1) });
       row.createSpan({ text: this.describeRelation(unit, relation, layer) });
       row.addEventListener("click", () => {
+        if (this.hasTextSelection()) return;
         this.activeRelation = active ? null : { unitId: unit.id, layer, relationId: relation.id };
         exercise.activeUnitId = unit.id;
         this.render();

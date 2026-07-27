@@ -7445,3 +7445,184 @@
 .translation-task-shell .translation-full-processor-body .translation-sentence-note-editor {
   max-height: 140px;
 }
+
+/* Visual-grammar unification pass.
+   One inspector grammar across unit mode, full-text mode, and the completed
+   archive; a second semantic hue for relations (warm amber family) so the
+   accent purple is reserved for the current unit container and primary
+   actions; flat list rows instead of raised pills; and all content text is
+   selectable for copying. */
+.translation-app {
+  --tx-relation-hue: 34;
+  --tx-relation: hsl(var(--tx-relation-hue) 62% 42%);
+  --tx-relation-soft: hsl(var(--tx-relation-hue) 62% 48% / .12);
+}
+
+.theme-dark .translation-app {
+  --tx-relation: hsl(var(--tx-relation-hue) 58% 60%);
+  --tx-relation-soft: hsl(var(--tx-relation-hue) 58% 58% / .16);
+}
+
+/* Relation fragments: warm hue family, rotated per relation index so
+   neighbouring relations stay distinguishable without touching purple. */
+.translation-selectable-text .is-related,
+.translation-context-text .is-related,
+.translation-unified-editor .is-related,
+.translation-task-shell .translation-full-unit-surface .is-related,
+.translation-completed-unit-text .is-related,
+.translation-completed-text .is-related,
+.translation-completed-reference-text .is-related {
+  border-bottom: 2px solid hsl(calc(34 + var(--relation-index) * 24) 58% 44%);
+  background: hsl(calc(34 + var(--relation-index) * 24) 62% 48% / .09);
+}
+
+.theme-dark .translation-selectable-text .is-related,
+.theme-dark .translation-context-text .is-related,
+.theme-dark .translation-unified-editor .is-related,
+.theme-dark .translation-task-shell .translation-full-unit-surface .is-related,
+.theme-dark .translation-completed-unit-text .is-related,
+.theme-dark .translation-completed-text .is-related,
+.theme-dark .translation-completed-reference-text .is-related {
+  border-bottom-color: hsl(calc(34 + var(--relation-index) * 24) 54% 62%);
+  background: hsl(calc(34 + var(--relation-index) * 24) 54% 60% / .13);
+}
+
+.translation-selectable-text .is-draft-range,
+.translation-unified-editor .is-draft-range,
+.translation-task-shell .translation-full-unit-surface .is-draft-range {
+  background: var(--tx-relation-soft);
+  box-shadow: inset 0 -3px 0 var(--tx-relation);
+}
+
+.translation-unit-workspace.has-active-relation [data-relation-id].is-active-relation {
+  border-bottom-color: var(--tx-relation);
+  background: var(--tx-relation-soft);
+  box-shadow: 0 0 0 2px hsl(var(--tx-relation-hue) 62% 48% / .10);
+}
+
+.translation-completed-unit-text .is-active-relation,
+.translation-completed-text .is-active-relation,
+.translation-completed-reference-text .is-active-relation {
+  background: var(--tx-relation-soft);
+  box-shadow: inset 0 -2px 0 var(--tx-relation);
+}
+
+.translation-task-shell .translation-forward-reference.is-main .translation-reference-text [data-reference-number].is-reference-active {
+  border-bottom-color: var(--tx-relation);
+  background: var(--tx-relation-soft);
+}
+
+/* Flat list rows: relation entries, reference entries, and tag picker rows
+   are text lines with a hover wash, not raised pills. */
+.translation-task-shell .translation-reference-relation,
+.translation-task-shell .translation-completed-relation-row,
+.translation-task-shell .translation-tag-picker-row,
+.translation-task-shell .translation-tag-add-button,
+.translation-task-shell .translation-relation-draft-fragment {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.translation-task-shell .translation-reference-relation:hover,
+.translation-task-shell .translation-completed-relation-row:hover,
+.translation-task-shell .translation-tag-picker-row:hover,
+.translation-task-shell .translation-tag-add-button:hover,
+.translation-task-shell .translation-relation-draft-fragment:hover {
+  background: var(--tx-control-hover);
+  box-shadow: none;
+}
+
+.translation-task-shell .translation-completed-relation-row {
+  padding: 5px 8px;
+}
+
+.translation-task-shell .translation-completed-relation-row.is-active {
+  background: var(--tx-accent-soft);
+  box-shadow: inset 2px 0 0 var(--tx-accent);
+}
+
+.translation-task-shell .translation-completed-relation-number {
+  color: var(--tx-relation);
+  font-family: var(--font-monospace);
+  font-size: 11px;
+}
+
+.translation-task-shell .translation-relation-tag {
+  border: 0;
+  background: var(--tx-control-hover);
+  box-shadow: none;
+}
+
+.translation-task-shell .translation-tag-picker {
+  border: 1px solid var(--tx-line);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px color-mix(in srgb, #000 10%, transparent);
+}
+
+/* All content text is selectable and copyable; only structural separators
+   and icon glyphs stay unselectable. */
+.translation-task-shell .translation-reference-relation,
+.translation-task-shell .translation-completed-relation-row,
+.translation-task-shell .translation-tag-picker-row,
+.translation-task-shell .translation-relation-tag,
+.translation-task-shell .translation-relation-inspector-summary,
+.translation-task-shell .translation-reference-relation-summary,
+.translation-task-shell .translation-reference-note,
+.translation-task-shell .translation-relation-comment-value,
+.translation-task-shell .translation-completed-note-row,
+.translation-task-shell .translation-full-reference-note,
+.translation-task-shell .translation-readonly-notes,
+.translation-task-shell .translation-sentence-note-preview,
+.translation-task-shell .translation-sentence-note-readonly-value,
+.translation-task-shell .translation-context-placeholder-value {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+
+.translation-task-shell .translation-reference-relation,
+.translation-task-shell .translation-completed-relation-row,
+.translation-task-shell .translation-tag-picker-row {
+  cursor: pointer;
+}
+
+/* Inspector grammar shared by unit mode and full-text mode: same background,
+   same section rhythm, no competing panel fills. */
+.translation-context-sidebar,
+.translation-task-shell .translation-context-sidebar,
+.translation-task-shell .translation-full-processor-context {
+  background: var(--background-primary);
+}
+
+/* The full-text processor lost its "current unit" pager header; the canvas
+   accent already communicates the current unit and the footer navigates. */
+.translation-task-shell .translation-full-processor-header {
+  display: none;
+}
+
+.translation-task-shell .translation-full-processor-body {
+  padding-top: 20px;
+}
+
+/* Completed archive inspector aligns with the workbench inspector: flat
+   header, flat tabs (styled by the shared flat-tab rules), no floating card. */
+.translation-task-shell .translation-completed-detail-header {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.translation-task-shell .translation-completed-detail-identity {
+  color: var(--tx-faint);
+  font-size: 11px;
+}
+
+.translation-task-shell .translation-completed-section-heading strong {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--tx-muted);
+  letter-spacing: .08em;
+}
