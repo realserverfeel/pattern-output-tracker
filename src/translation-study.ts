@@ -2205,7 +2205,7 @@ export class TranslationStudyView extends ItemView {
     });
     textarea.rows = 2;
     textarea.value = notes[0]?.text ?? "";
-    this.bindPersistentNoteHeight(textarea);
+    if (stage === "translation") this.bindPersistentNoteHeight(textarea);
     let saveTimer = 0;
     textarea.addEventListener("input", () => {
       setTranslationNote(unit, stage, textarea.value);

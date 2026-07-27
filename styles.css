@@ -8041,10 +8041,10 @@
   box-sizing: border-box;
 }
 
-/* A: back-translation unit mode — the 回译 editor is the flexible main
-   body. It grows to fill the space left by the (fixed) material and
-   note cards, so short content never leaves a void above the pinned
-   footer; long content overflows into the layout's own scroll. */
+/* Back-translation unit mode — the 回译笔记 (note) box is the flexible
+   main body: it fills the height left by the fixed material and 回译
+   input cards, so short content / zoom-out never leaves a void above
+   the pinned footer, and it stays that way across sentences. */
 .translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair {
   display: flex;
   flex-direction: column;
@@ -8053,19 +8053,36 @@
 }
 
 .translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-back-material,
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note {
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card {
   flex: 0 0 auto;
 }
 
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card {
+/* 回译 input: fixed, compact, internal scroll, no resize handle. */
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  overflow-y: auto;
+  resize: none;
+}
+
+/* 回译笔记: flex-fills the remaining height down to the footer. */
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: 160px;
+  min-height: 120px;
 }
 
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note > .translation-sentence-note-editor-wrap {
   flex: 1 1 auto;
+  display: flex;
   min-height: 0;
-  max-height: none;
+}
+
+.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note .translation-sentence-note-editor {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  resize: none;
 }
