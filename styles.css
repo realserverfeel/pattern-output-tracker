@@ -7686,3 +7686,117 @@
 .translation-app .translation-full-processor .translation-comparison-note {
   padding-top: 0;
 }
+
+/* Viewport-fit height model: the exercise page is exactly one screen tall.
+   Header and footer are pinned; only the middle work area scrolls, using the
+   plugin's own scrollbars instead of Obsidian's outer view scrollbar. */
+.view-content.translation-app {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-content.translation-app {
+  padding: 0;
+}
+
+.translation-app .translation-task-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.translation-app .translation-work-layout {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.translation-app .translation-unit-nav {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.translation-app .translation-unit-workspace {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding-top: 24px;
+}
+
+.translation-app .translation-unit-header {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+}
+
+/* The layout body between header and footer is the single scroll region. */
+.translation-app .translation-unit-workspace > .translation-unified-layout,
+.translation-app .translation-unit-workspace > .translation-full-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Full mode: document and inspector scroll independently inside the body. */
+.translation-app .translation-work-layout.is-full-mode .translation-full-layout {
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.translation-app .translation-full-layout > .translation-full-document,
+.translation-app .translation-full-layout > .translation-full-processor {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Unit mode: the paired canvas / inspector scrolls as one body. */
+.translation-app .translation-unit-workspace > .translation-unified-layout {
+  overflow-y: auto;
+}
+
+/* Footer pinned to the bottom of the workspace, always on screen. */
+.translation-app .translation-unit-workspace > .translation-work-footer {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--tx-line);
+  background: color-mix(in srgb, var(--background-primary) 92%, transparent);
+}
+
+/* Tighter inspector rhythm: sections sit closer together. */
+.translation-app .translation-full-processor-body {
+  gap: 14px;
+  padding: 18px 20px 6px;
+}
+
+.translation-app .translation-full-processor-context {
+  padding: 16px 20px 18px;
+}
+
+.translation-app .translation-full-processor-context .translation-relation-inspector,
+.translation-app .translation-full-processor-context .translation-relation-composer.is-drafting,
+.translation-app .translation-full-processor-context .translation-context-placeholder {
+  padding-bottom: 16px;
+}
+
+.translation-app .translation-relation-inspector-summary {
+  margin-bottom: 10px;
+}
+
+.translation-app .translation-relation-comment-editor,
+.translation-app .translation-comparison-note-editor {
+  min-height: 64px;
+}
+
+.translation-app .translation-comparison-note {
+  padding-top: 4px;
+}
+
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker {
+  margin-bottom: 6px;
+}

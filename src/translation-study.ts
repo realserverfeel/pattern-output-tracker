@@ -909,14 +909,11 @@ export class TranslationStudyView extends ItemView {
     this.renderWorkbenchModeSwitch(headerTools, stage, mode);
     headerTools.createDiv({ cls: "translation-unified-hint", text: "自动保存" });
 
-    const workSurface = mode === "full"
-      ? this.renderFullTextWorkspace(workspace, exercise, active, stage)
-      : stage === "translate"
-        ? this.renderTranslationWorkspace(workspace, exercise, active)
-        : stage === "backTranslate"
-          ? this.renderBackTranslationWorkspace(workspace, exercise, active)
-          : this.renderComparisonWorkspace(workspace, exercise, active);
-    this.renderWorkbenchFooter(workSurface, exercise, units, activeIndex, stage);
+    if (mode === "full") this.renderFullTextWorkspace(workspace, exercise, active, stage);
+    else if (stage === "translate") this.renderTranslationWorkspace(workspace, exercise, active);
+    else if (stage === "backTranslate") this.renderBackTranslationWorkspace(workspace, exercise, active);
+    else this.renderComparisonWorkspace(workspace, exercise, active);
+    this.renderWorkbenchFooter(workspace, exercise, units, activeIndex, stage);
   }
 
   private renderWorkbenchModeSwitch(
@@ -1008,8 +1005,7 @@ export class TranslationStudyView extends ItemView {
 
     const processor = layout.createDiv({ cls: "translation-full-processor" });
     this.renderFullTextProcessor(processor, workspace, exercise, active, stage);
-    const footerHost = layout.createDiv({ cls: "translation-full-footer-host" });
-    return footerHost;
+    return layout;
   }
 
   private renderFullTextProcessor(
