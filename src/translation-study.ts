@@ -1490,7 +1490,10 @@ export class TranslationStudyView extends ItemView {
     if (hasDraft || hasActive) return;
     const placeholder = sidebar.createDiv({ cls: "translation-context-placeholder" });
     placeholder.createDiv({ cls: "translation-reference-kicker", text: "关联" });
-    placeholder.createDiv({ text: "未选择", cls: "translation-context-placeholder-value" });
+    placeholder.createDiv({
+      text: layer === "comparison" ? "拖选原文与回译片段建立关联" : "拖选原文与译文片段建立关联",
+      cls: "translation-context-placeholder-value",
+    });
   }
 
   private renderUnifiedReadOnlyCard(
@@ -2158,7 +2161,7 @@ export class TranslationStudyView extends ItemView {
       cls: "translation-comparison-note-editor",
       placeholder: "记录这个条目的整体对照结论",
     });
-    textarea.rows = 6;
+    textarea.rows = 4;
     textarea.value = unit.comparisonNote;
     let timer = 0;
     textarea.addEventListener("input", () => {

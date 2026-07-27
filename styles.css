@@ -7372,3 +7372,76 @@
   background: transparent;
   box-shadow: none;
 }
+
+/* Viewport-fit pass for the full-text processor: the inspector holds one
+   screen of tools. Editors are capped and scroll internally, sections are
+   separated by whitespace and small labels instead of rules, and the
+   workbench shares one type scale (canvas 18–20 / editor 16 / aid 13.5 /
+   label 11.5). */
+.translation-task-shell .translation-full-processor {
+  max-height: calc(100vh - 210px);
+}
+
+.translation-task-shell .translation-full-document .translation-full-flow {
+  font-size: clamp(18px, 1.5vw, 20px);
+}
+
+.translation-task-shell .translation-full-processor-body {
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.translation-task-shell .translation-full-processor-body > .translation-editor-card {
+  min-height: 0;
+  padding: 14px 16px 15px;
+}
+
+.translation-task-shell .translation-full-processor-body .translation-unified-editor,
+.translation-task-shell .translation-full-processor-body .translation-unit-editor {
+  min-height: 96px;
+  max-height: 216px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.translation-task-shell .translation-full-processor .translation-full-reference > summary {
+  font-size: 12px;
+}
+
+.translation-task-shell .translation-full-processor-context {
+  padding: 6px 20px 18px;
+  min-height: 0;
+}
+
+.translation-task-shell .translation-full-processor-context .translation-relation-inspector,
+.translation-task-shell .translation-full-processor-context .translation-relation-composer.is-drafting {
+  padding-bottom: 14px;
+  border-bottom: 0;
+}
+
+.translation-task-shell .translation-full-processor-context .translation-context-placeholder {
+  min-height: 0;
+  padding-bottom: 14px;
+  border-bottom: 0;
+}
+
+.translation-task-shell .translation-context-placeholder-value {
+  color: var(--tx-muted);
+  font-size: 12.5px;
+}
+
+.translation-task-shell .translation-full-processor .translation-comparison-note {
+  padding-top: 12px;
+  border-top: 0;
+}
+
+.translation-task-shell .translation-comparison-note-editor {
+  min-height: 92px;
+  max-height: 180px;
+  font-size: 13.5px;
+}
+
+.translation-task-shell .translation-full-processor-body .translation-sentence-note-editor {
+  max-height: 140px;
+}
