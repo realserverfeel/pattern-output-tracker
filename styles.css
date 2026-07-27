@@ -8041,24 +8041,24 @@
   box-sizing: border-box;
 }
 
-/* Back-translation unit mode — the 回译笔记 (note) box is the flexible
-   main body: it fills the height left by the fixed material and 回译
-   input cards, so short content / zoom-out never leaves a void above
-   the pinned footer, and it stays that way across sentences. */
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair {
+/* Unit mode (初译 & 回译) — the 批注/笔记 box is the flexible main body:
+   it fills the height left by the fixed source/material and editor
+   cards, so short content / zoom-out never leaves a void above the
+   pinned footer, and it stays that way across sentences and stages. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair {
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-height: 100%;
 }
 
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-back-material,
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card {
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-text-card,
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-editor-card {
   flex: 0 0 auto;
 }
 
-/* 回译 input: fixed, compact, internal scroll, no resize handle. */
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
+/* 译文 / 回译 input: fixed, compact, internal scroll, no resize handle. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-editor-card > .translation-unit-editor {
   height: 150px;
   min-height: 150px;
   max-height: 150px;
@@ -8066,23 +8066,24 @@
   resize: none;
 }
 
-/* 回译笔记: flex-fills the remaining height down to the footer. */
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note {
+/* 句子批注 / 回译笔记: flex-fills the remaining height to the footer. */
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 120px;
 }
 
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note > .translation-sentence-note-editor-wrap {
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note > .translation-sentence-note-editor-wrap {
   flex: 1 1 auto;
   display: flex;
   min-height: 0;
 }
 
-.translation-app .translation-unified-layout.is-back-translation > .translation-unified-pair > .translation-sentence-note .translation-sentence-note-editor {
+.translation-app .translation-unified-layout:not(.is-comparison) > .translation-unified-pair > .translation-sentence-note .translation-sentence-note-editor {
   flex: 1 1 auto;
   height: auto;
   min-height: 0;
+  max-height: none;
   resize: none;
 }
