@@ -22,6 +22,12 @@
   --tx-raised: var(--background-primary);
   --tx-radius: 18px;
   --tx-shadow: 0 14px 42px color-mix(in srgb, #1d1738 10%, transparent);
+  --tx-fs-root: max(15px, var(--font-text-size, 16px));
+  --tx-fs-canvas: calc(var(--tx-fs-root) * 1.06);
+  --tx-fs-body: var(--tx-fs-root);
+  --tx-fs-secondary: calc(var(--tx-fs-root) * .92);
+  --tx-fs-label: calc(var(--tx-fs-root) * .8);
+  --tx-fs-meta: calc(var(--tx-fs-root) * .8);
   box-sizing: border-box;
   container-type: inline-size;
   height: 100%;
@@ -7414,7 +7420,7 @@
 }
 
 .translation-app .translation-full-processor .translation-full-reference > summary {
-  font-size: 12px;
+  font-size: var(--tx-fs-label);
 }
 
 .translation-app .translation-full-processor-context {
@@ -7625,7 +7631,7 @@
 
 .translation-app .translation-completed-detail-identity {
   color: var(--tx-faint);
-  font-size: 11px;
+  font-size: var(--tx-fs-label);
 }
 
 .translation-app .translation-completed-section-heading strong {
@@ -7799,4 +7805,148 @@
 .translation-app .translation-notes-title,
 .translation-app .translation-reference-kicker {
   margin-bottom: 6px;
+}
+
+/* ============================================================
+   Unified type scale. One rooted scale (follows Obsidian's
+   --font-text-size); nothing content-bearing renders below the
+   body tier. Labels/meta share the small tier but never go
+   micro. This block is the single source of truth for sizing
+   and overrides the historical scattered px values. */
+
+/* Content text — always readable body size. */
+.translation-app .translation-selectable-text,
+.translation-app .translation-context-text,
+.translation-app .translation-reference-text,
+.translation-app .translation-unified-editor,
+.translation-app .translation-unit-editor,
+.translation-app .translation-editor,
+.translation-app .translation-editor textarea,
+.translation-app .translation-sentence-note-editor,
+.translation-app .translation-sentence-note-readonly-value,
+.translation-app .translation-relation-comment-editor,
+.translation-app .translation-relation-comment-value,
+.translation-app .translation-comparison-note-editor,
+.translation-app .translation-full-unit-surface,
+.translation-app .translation-completed-unit-text,
+.translation-app .translation-completed-text,
+.translation-app .translation-completed-reference-text {
+  font-size: var(--tx-fs-body);
+  line-height: 1.6;
+}
+
+.translation-app .translation-full-flow,
+.translation-app .translation-full-document .translation-full-flow {
+  font-size: var(--tx-fs-canvas);
+  line-height: 1.8;
+}
+
+/* Secondary content — descriptions, tags, notes, placeholders,
+   reference summaries: still comfortably readable. */
+.translation-app .translation-readonly-notes,
+.translation-app .translation-readonly-notes > div,
+.translation-app .translation-context-placeholder-value,
+.translation-app .translation-reference-relation-summary,
+.translation-app .translation-relation-inspector-summary,
+.translation-app .translation-reference-note,
+.translation-app .translation-full-reference-note,
+.translation-app .translation-relation-tag,
+.translation-app .translation-tag-picker-row,
+.translation-app .translation-tag-add-button,
+.translation-app .translation-relation-draft-fragment,
+.translation-app .translation-completed-note-row,
+.translation-app .translation-completed-relation-row,
+.translation-app .translation-reference-relation,
+.translation-app .translation-unit-preview,
+.translation-app .translation-reference-relation-index,
+.translation-app .translation-completed-relation-index {
+  font-size: var(--tx-fs-secondary);
+  line-height: 1.55;
+}
+
+/* Section labels / kickers / tabs — small tier, floored. */
+.translation-app .translation-card-label,
+.translation-app .translation-field-label,
+.translation-app .translation-notes-title,
+.translation-app .translation-reference-kicker,
+.translation-app .translation-sentence-note-label,
+.translation-app .translation-unit-nav-heading,
+.translation-app .translation-full-reference > summary,
+.translation-app .translation-relation-inspector-title,
+.translation-app .translation-completed-section-label {
+  font-size: var(--tx-fs-label);
+  letter-spacing: .04em;
+}
+
+/* Meta — stage stage rail, doc header counts, autosave hint. */
+.translation-app .translation-task-stage,
+.translation-app .translation-stage-step,
+.translation-app .translation-unified-hint,
+.translation-app .translation-full-document-header,
+.translation-app .translation-full-document-header strong,
+.translation-app .translation-unit-number,
+.translation-app .translation-work-footer-progress {
+  font-size: var(--tx-fs-meta);
+}
+
+/* Static (non-folding) annotation blocks. */
+.translation-app .translation-sentence-note.is-static {
+  display: block;
+}
+
+.translation-app .translation-sentence-note-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--tx-muted);
+}
+
+.translation-app .translation-sentence-note-heading .translation-sentence-note-icon {
+  display: inline-flex;
+  color: var(--tx-accent);
+}
+
+.translation-app .translation-sentence-note.is-static .translation-sentence-note-editor-wrap {
+  display: block;
+}
+
+.translation-app .translation-sentence-note-readonly-value {
+  padding: 0;
+  color: var(--tx-ink);
+  white-space: pre-wrap;
+}
+
+/* Type-scale completion: completed-archive labels/meta and mode
+   tabs join the same rooted scale so nothing renders micro. */
+.translation-app .translation-eyebrow,
+.translation-app .translation-completed-section-label,
+.translation-app .translation-completed-section-heading strong,
+.translation-app .translation-completed-section-heading span {
+  font-size: var(--tx-fs-label);
+  letter-spacing: .04em;
+}
+
+.translation-app .translation-article-page-meta,
+.translation-app .translation-completed-toolbar-hint,
+.translation-app .translation-completed-paragraph-number,
+.translation-app .translation-full-block-number {
+  font-size: var(--tx-fs-meta);
+}
+
+.translation-app .translation-completed-empty {
+  font-size: var(--tx-fs-secondary);
+}
+
+.translation-app .translation-workbench-view-switch button,
+.translation-app .translation-completed-detail-tabs button,
+.translation-app .translation-completed-projections button,
+.translation-app .translation-full-reference > summary {
+  font-size: var(--tx-fs-secondary);
+}
+
+.translation-app .translation-completed-document-heading,
+.translation-app .translation-completed-document-heading strong,
+.translation-app .translation-completed-document-heading span {
+  font-size: var(--tx-fs-meta);
 }

@@ -1342,12 +1342,10 @@ export class TranslationStudyView extends ItemView {
   private renderReadOnlySentenceNote(parent: HTMLElement, notes: readonly TranslationNote[], label: string): void {
     const note = notes[0];
     if (!note) return;
-    const section = parent.createEl("details", { cls: "translation-sentence-note is-readonly" });
-    const summary = section.createEl("summary", { cls: "translation-sentence-note-summary" });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
-    summary.createSpan({ cls: "translation-sentence-note-label", text: label });
-    summary.createSpan({ cls: "translation-sentence-note-preview", text: note.text });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-chevron" }), "chevron-down");
+    const section = parent.createDiv({ cls: "translation-sentence-note is-readonly is-static" });
+    const heading = section.createDiv({ cls: "translation-sentence-note-heading" });
+    setIcon(heading.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
+    heading.createSpan({ cls: "translation-sentence-note-label", text: label });
     section.createDiv({ cls: "translation-sentence-note-readonly-value", text: note.text });
   }
 
@@ -2175,15 +2173,10 @@ export class TranslationStudyView extends ItemView {
     label: string,
   ): void {
     const notes = stage === "translation" ? unit.translationNotes : unit.backTranslationNotes;
-    const section = parent.createEl("details", { cls: "translation-sentence-note" });
-    const summary = section.createEl("summary", { cls: "translation-sentence-note-summary" });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
-    summary.createSpan({ cls: "translation-sentence-note-label", text: label });
-    const preview = summary.createSpan({
-      cls: `translation-sentence-note-preview${notes[0]?.text ? "" : " is-empty"}`,
-      text: notes[0]?.text || "添加",
-    });
-    setIcon(summary.createSpan({ cls: "translation-sentence-note-chevron" }), "chevron-down");
+    const section = parent.createDiv({ cls: "translation-sentence-note is-static" });
+    const heading = section.createDiv({ cls: "translation-sentence-note-heading" });
+    setIcon(heading.createSpan({ cls: "translation-sentence-note-icon" }), "message-square-text");
+    heading.createSpan({ cls: "translation-sentence-note-label", text: label });
 
     const editorWrap = section.createDiv({ cls: "translation-sentence-note-editor-wrap" });
     const textarea = editorWrap.createEl("textarea", {
@@ -2194,18 +2187,13 @@ export class TranslationStudyView extends ItemView {
     textarea.value = notes[0]?.text ?? "";
     let saveTimer = 0;
     textarea.addEventListener("input", () => {
-      const note = setTranslationNote(unit, stage, textarea.value);
-      preview.textContent = note?.text || "添加";
-      preview.toggleClass("is-empty", !note);
+      setTranslationNote(unit, stage, textarea.value);
       window.clearTimeout(saveTimer);
       saveTimer = window.setTimeout(() => void this.persist(exercise, false), 320);
     });
     textarea.addEventListener("blur", () => {
       window.clearTimeout(saveTimer);
       void this.persist(exercise, false);
-    });
-    section.addEventListener("toggle", () => {
-      if (section.open) window.setTimeout(() => textarea.focus(), 0);
     });
   }
 
